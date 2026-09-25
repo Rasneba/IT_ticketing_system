@@ -20,7 +20,7 @@ import { getDashboardData } from "@/lib/queries";
 import { DOMAIN_GROUPS, DOMAIN_META, DOMAINS, type DomainGroup } from "@/lib/domains";
 import { PRIORITIES, SLA_POLICY, formatMinutes } from "@/lib/sla";
 import { STATUS_META } from "@/lib/workflow";
-import { BUILDING_NAME, cn, firstName, formatDate, locationLabel, ticketRef, timeAgo } from "@/lib/utils";
+import { BUILDING_NAME, BUILDING_TZ, cn, firstName, formatDate, locationLabel, ticketRef, timeAgo } from "@/lib/utils";
 import { AssetStatusBadge, DomainTile, PriorityBadge, StatusBadge } from "@/components/badges";
 import { Avatar, Card, CardHeader, EmptyState, LinkButton, StatCard } from "@/components/ui";
 import { SlaPill } from "@/components/sla-timer";
@@ -28,7 +28,7 @@ import { SlaPill } from "@/components/sla-timer";
 export const metadata: Metadata = { title: "Dashboard" };
 
 function greeting() {
-  const h = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: process.env.NEXT_PUBLIC_BUILDING_TZ ?? "Asia/Dubai" }).format(new Date()));
+  const h = Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hour12: false, timeZone: BUILDING_TZ }).format(new Date()));
   return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
 }
 
