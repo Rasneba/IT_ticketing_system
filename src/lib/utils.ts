@@ -1,5 +1,22 @@
-export const BUILDING_NAME = process.env.NEXT_PUBLIC_BUILDING_NAME ?? "Marina Heights Residences";
-export const BUILDING_TZ = process.env.NEXT_PUBLIC_BUILDING_TZ ?? "Asia/Dubai";
+const DEFAULT_TZ = "Asia/Dubai";
+
+function envOr(value: string | undefined, fallback: string) {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : fallback;
+}
+
+function validTimeZone(value: string | undefined) {
+  const tz = envOr(value, DEFAULT_TZ);
+  try {
+    new Intl.DateTimeFormat("en-GB", { timeZone: tz });
+    return tz;
+  } catch {
+    return DEFAULT_TZ;
+  }
+}
+
+export const BUILDING_NAME = envOr(process.env.NEXT_PUBLIC_BUILDING_NAME, "Marina Heights Residences");
+export const BUILDING_TZ = validTimeZone(process.env.NEXT_PUBLIC_BUILDING_TZ);
 
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -9,30 +26,39 @@ export function ticketRef(seq: number) {
   return `SR-${String(seq).padStart(5, "0")}`;
 }
 
-const dtf = new Intl.DateTimeFormat("en-GB", {
-  timeZone: BUILDING_TZ,
-  day: "2-digit",
-  month: "short",
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
-});
-const df = new Intl.DateTimeFormat("en-GB", { timeZone: BUILDING_TZ, day: "2-digit", month: "short", year: "numeric" });
-const tf = new Intl.DateTimeFormat("en-GB", { timeZone: BUILDING_TZ, hour: "2-digit", minute: "2-digit", hour12: false });
+let formatters: { dtf: Intl.DateTimeFormat; df: Intl.DateTimeFormat; tf: Intl.DateTimeFormat } | null = null;
+
+function getFormatters() {
+  if (!formatters) {
+    formatters = {
+      dtf: new Intl.DateTimeFormat("en-GB", {
+        timeZone: BUILDING_TZ,
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
+      df: new Intl.DateTimeFormat("en-GB", { timeZone: BUILDING_TZ, day: "2-digit", month: "short", year: "numeric" }),
+      tf: new Intl.DateTimeFormat("en-GB", { timeZone: BUILDING_TZ, hour: "2-digit", minute: "2-digit", hour12: false }),
+    };
+  }
+  return formatters;
+}
 
 export function formatDateTime(d: Date | string | null | undefined) {
   if (!d) return "—";
-  return dtf.format(new Date(d));
+  return getFormatters().dtf.format(new Date(d));
 }
 
 export function formatDate(d: Date | string | null | undefined) {
   if (!d) return "—";
-  return df.format(new Date(d));
+  return getFormatters().df.format(new Date(d));
 }
 
 export function formatTime(d: Date | string | null | undefined) {
   if (!d) return "—";
-  return tf.format(new Date(d));
+  return getFormatters().tf.format(new Date(d));
 }
 
 export function timeAgo(d: Date | string | null | undefined, now: Date = new Date()) {
