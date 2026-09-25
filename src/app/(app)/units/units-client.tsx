@@ -7,7 +7,7 @@ import { Building2, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { UnitType } from "@/db/schema";
 import { deleteUnitAction, saveUnitAction } from "@/app/actions/admin";
 import type { ActionResult } from "@/lib/action-types";
-import { UNIT_TYPES, UNIT_TYPE_META } from "@/lib/domains";
+import { UNIT_TYPES, UNIT_TYPE_META, categoryBadgeClass } from "@/lib/domains";
 import { cn } from "@/lib/utils";
 import { UnitTypeBadge } from "@/components/badges";
 import { Card, EmptyState, Field, buttonClass, inputClass } from "@/components/ui";
@@ -27,9 +27,23 @@ export type UnitRow = {
   notes: string | null;
   assetCount: number;
   openTickets: number;
+  categoryId: string | null;
+  categoryCode: string | null;
+  categoryName: string | null;
+  categoryColor: string | null;
 };
 
-function UnitForm({ unit, onDone }: { unit: UnitRow | null; onDone: () => void }) {
+export type CategoryOption = { id: string; code: string; name: string; color: string };
+
+function UnitForm({
+  unit,
+  categories,
+  onDone,
+}: {
+  unit: UnitRow | null;
+  categories: CategoryOption[];
+  onDone: () => void;
+}) {
   const [state, formAction] = useActionState<ActionResult | null, FormData>(async (prev, fd) => {
     const res = await saveUnitAction(prev, fd);
     if (res.ok) {
@@ -62,6 +76,16 @@ function UnitForm({ unit, onDone }: { unit: UnitRow | null; onDone: () => void }
         <Field label="Floor" htmlFor="floor" required error={e.floor}>
           <input id="floor" name="floor" defaultValue={unit?.floor} className={inputClass} placeholder="Ground Floor" />
         </Field>
+        <Field label="Category" htmlFor="categoryId" error={e.categoryId} className="sm:col-span-2">
+          <select id="categoryId" name="categoryId" defaultValue={unit?.categoryId ?? ""} className={inputClass}>
+            <option value="">Uncategorised</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.code} · {c.name}
+              </option>
+            ))}
+          </select>
+        </Field>
         <Field label="Floor level" htmlFor="floorLevel" error={e.floorLevel} hint="Sort order (B1 = -1)">
           <input id="floorLevel" name="floorLevel" type="number" defaultValue={unit?.floorLevel ?? 0} className={inputClass} />
         </Field>
@@ -91,7 +115,15 @@ function UnitForm({ unit, onDone }: { unit: UnitRow | null; onDone: () => void }
   );
 }
 
-export function UnitsManager({ rows, canManage }: { rows: UnitRow[]; canManage: boolean }) {
+export function UnitsManager({
+  rows,
+  categories,
+  canManage,
+}: {
+  rows: UnitRow[];
+  categories: CategoryOption[];
+  canManage: boolean;
+}) {
   const [optimisticRows, removeRow] = useOptimistic(rows, (state: UnitRow[], id: string) => state.filter((r) => r.id !== id));
   const [, startTransition] = useTransition();
   const [editing, setEditing] = useState<UnitRow | null>(null);
@@ -170,7 +202,20 @@ export function UnitsManager({ rows, canManage }: { rows: UnitRow[]; canManage: 
                       </Link>
                     </td>
                     <td className="px-3 py-3">
-                      <UnitTypeBadge type={u.type} />
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <UnitTypeBadge type={u.type} />
+                        {u.categoryCode ? (
+                          <span
+                            title={u.categoryName ?? undefined}
+                            className={cn(
+                              "inline-flex items-center rounded-lg px-1.5 py-0.5 font-mono text-[10px] font-semibold ring-1 ring-inset",
+                              categoryBadgeClass(u.categoryColor),
+                            )}
+                          >
+                            {u.categoryCode}
+                          </span>
+                        ) : null}
+                      </div>
                     </td>
                     <td className="hidden px-3 py-3 text-xs text-slate-600 md:table-cell">{u.floor}</td>
                     <td className="hidden px-3 py-3 lg:table-cell">
@@ -202,7 +247,15 @@ export function UnitsManager({ rows, canManage }: { rows: UnitRow[]; canManage: 
       </Card>
 
       <Modal open={creating || !!editing} onClose={() => { setCreating(false); setEditing(null); }} title={editing ? `Edit ${editing.code}` : "New unit"} size="lg">
-        <UnitForm key={editing?.id ?? "new"} unit={editing} onDone={() => { setCreating(false); setEditing(null); }} />
+        <UnitForm
+          key={editing?.id ?? "new"}
+          unit={editing}
+          categories={categories}
+          onDone={() => {
+            setCreating(false);
+            setEditing(null);
+          }}
+        />
       </Modal>
       <Modal open={!!confirm} onClose={() => setConfirm(null)} title={`Delete unit ${confirm?.code}?`} description="Assets and tickets in this unit are kept but unlinked from the location.">
         <div className="flex justify-end gap-2">

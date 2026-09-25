@@ -12,6 +12,7 @@ export const can = {
   editAssets: staff,
   deleteAssets: mgmt,
   manageUnits: mgmt,
+  manageCategories: mgmt,
   workTickets: staff,
   assignTickets: staff,
   overridePriority: mgmt,

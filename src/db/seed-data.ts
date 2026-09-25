@@ -1,8 +1,10 @@
+import { inArray } from "drizzle-orm";
 import type { db as appDb } from "./index";
 import {
   apiKeys,
   assets,
   auditLogs,
+  categories,
   meterReadings,
   ticketNotes,
   tickets,
@@ -77,6 +79,28 @@ export async function seedDatabase(db: DB) {
   const rand = mulberry32(20260301);
 
   await db.transaction(async (tx) => {
+    /* ----------------------------- Categories ---------------------------- */
+    const catRows = await tx
+      .insert(categories)
+      .values([
+        { code: "TOWER-A", name: "Tower A", type: "UNIT", description: "Residential and retail floors of the main tower.", color: "indigo", sortOrder: 10 },
+        { code: "TOWER-B", name: "Tower B", type: "UNIT", description: "Secondary residential tower.", color: "violet", sortOrder: 20 },
+        { code: "PODIUM", name: "Podium & Retail", type: "UNIT", description: "Ground-floor retail and lobby areas.", color: "orange", sortOrder: 30 },
+        { code: "BASEMENT", name: "Basement Plant", type: "UNIT", description: "Pump, electrical and comms plant rooms.", color: "slate", sortOrder: 40 },
+        { code: "AMENITY", name: "Amenities", type: "UNIT", description: "Gym, pool deck, parking and other shared facilities.", color: "emerald", sortOrder: 50 },
+        { code: "LIFTS", name: "Lifts & Vertical Transport", type: "ASSET", description: "Passenger and goods lifts, escalators.", color: "sky", sortOrder: 10 },
+        { code: "HVAC-PLANT", name: "HVAC Plant", type: "ASSET", description: "Chillers, AHUs, cooling towers and fans.", color: "sky", sortOrder: 20 },
+        { code: "WATER", name: "Water & Pumps", type: "ASSET", description: "Booster sets, tanks and treatment.", color: "sky", sortOrder: 30 },
+        { code: "POWER", name: "Power & Backup", type: "ASSET", description: "LV switchgear, generators, UPS and ATS.", color: "amber", sortOrder: 40 },
+        { code: "SECURITY", name: "Security Systems", type: "ASSET", description: "CCTV, access control and perimeter detection.", color: "rose", sortOrder: 50 },
+        { code: "NETWORK", name: "Network & Telephony", type: "ASSET", description: "Switches, Wi-Fi, structured cabling and PBX.", color: "violet", sortOrder: 60 },
+        { code: "COMPLIANCE", name: "Statutory Inspection", type: "TICKET", description: " legally mandated checks and certifications.", color: "rose", sortOrder: 10 },
+        { code: "PREVENTIVE", name: "Preventive Maintenance", type: "TICKET", description: "Scheduled servicing ahead of failure.", color: "emerald", sortOrder: 20 },
+        { code: "COSMETIC", name: "Cosmetic / Minor", type: "TICKET", description: "Non-urgent cosmetic defects, no service impact.", color: "slate", sortOrder: 90 },
+      ])
+      .returning();
+    const C = Object.fromEntries(catRows.map((c) => [c.code, c]));
+
     /* ------------------------------- Units ------------------------------- */
     const unitRows = await tx
       .insert(units)
@@ -103,6 +127,16 @@ export async function seedDatabase(db: DB) {
       ])
       .returning();
     const U = Object.fromEntries(unitRows.map((u) => [u.code, u]));
+
+    // Attach the location categories to the seeded units.
+    await tx
+      .update(units)
+      .set({ categoryId: C.BASEMENT.id })
+      .where(inArray(units.code, ["B1-PUMP", "B1-ELEC", "B1-COMMS", "ROOF"]));
+    await tx.update(units).set({ categoryId: C.PODIUM.id }).where(inArray(units.code, ["LOBBY", "1A", "2A", "4B", "SEC-01", "L1-MGMT"]));
+    await tx.update(units).set({ categoryId: C.AMENITY.id }).where(inArray(units.code, ["B1-PARK", "L1-GYM"]));
+    await tx.update(units).set({ categoryId: C["TOWER-A"].id }).where(inArray(units.code, ["305", "407", "512", "1201"]));
+    await tx.update(units).set({ categoryId: C["TOWER-B"].id }).where(inArray(units.code, ["608", "710", "904"]));
 
     /* ------------------------------- Users ------------------------------- */
     const userRows = await tx

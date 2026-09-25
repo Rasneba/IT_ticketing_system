@@ -7,6 +7,7 @@ import {
   BookOpen,
   Boxes,
   Building2,
+  FolderTree,
   Gauge,
   LayoutDashboard,
   LogOut,
@@ -55,6 +56,7 @@ const NAV: { section: string; items: NavItem[] }[] = [
     section: "Administration",
     items: [
       { href: "/users", label: "Users", icon: Users, roles: ["ADMIN"] },
+      { href: "/categories", label: "Categories", icon: FolderTree, roles: ["ADMIN", "MANAGER"] },
       { href: "/settings", label: "SLA & Integrations", icon: Settings, roles: ["ADMIN", "MANAGER"] },
       { href: "/audit", label: "Audit log", icon: ScrollText, roles: ["ADMIN", "MANAGER"] },
     ],

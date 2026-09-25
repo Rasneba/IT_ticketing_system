@@ -4,11 +4,29 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { assets, tickets, type ImpactScope } from "@/db/schema";
+import { assets, tickets, type ImpactScope, type SystemDomain } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
-import { findIssue, IMPACT_SCOPES } from "@/lib/domains";
+import { findIssue, IMPACT_SCOPES, isDomain } from "@/lib/domains";
 import { createTicketRecord } from "@/lib/ticket-service";
+import { isUuid, ticketRef } from "@/lib/utils";
 import { str, type ActionResult } from "@/lib/action-types";
+
+/** Rate limit for unauthenticated submissions, per reporter contact. */
+const PUBLIC_WINDOW_MS = 60 * 60_000;
+const PUBLIC_MAX_PER_WINDOW = 5;
+
+async function isRateLimited(contact: string) {
+  const [{ n }] = await db
+    .select({ n: sql<number>`count(*)`.mapWith(Number) })
+    .from(tickets)
+    .where(
+      and(
+        eq(tickets.reporterContact, contact),
+        gte(tickets.createdAt, new Date(Date.now() - PUBLIC_WINDOW_MS)),
+      ),
+    );
+  return n >= PUBLIC_MAX_PER_WINDOW;
+}
 
 /** Public, unauthenticated Scan-to-Report submission from an asset QR sticker. */
 export async function submitPublicReportAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
@@ -61,3 +79,58 @@ export async function submitPublicReportAction(_prev: ActionResult | null, formD
   revalidatePath("/dashboard");
   redirect(`/track/${ticket.publicToken}?new=1`);
 }
+
+/**
+ * Public, unauthenticated ticket request from the "report an issue" page.
+ * No QR token and no account required — a tenant picks the system, the issue and
+ * optionally their unit. Returns a tracking link instead of a session.
+ */
+export async function submitPublicTicketAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  if (str(formData, "website")) return { ok: false, error: "Submission rejected." }; // honeypot
+
+  const domainRaw = str(formData, "domain");
+  const issueCode = str(formData, "issueCode");
+  const impactScope = (str(formData, "impactScope") || "SINGLE") as ImpactScope;
+  const unitId = str(formData, "unitId");
+  const description = str(formData, "description").slice(0, 2000);
+  const reporterName = str(formData, "reporterName").slice(0, 120);
+  const reporterContact = str(formData, "reporterContact").slice(0, 120);
+  const safetyHazard = formData.get("safetyHazard") === "on";
+
+  const fieldErrors: Record<string, string> = {};
+  if (!isDomain(domainRaw)) fieldErrors.domain = "Choose the system that has a problem";
+  if (!IMPACT_SCOPES.includes(impactScope)) fieldErrors.impactScope = "Choose who is affected";
+  if (reporterName.length < 2) fieldErrors.reporterName = "Your name helps the technician find you";
+  if (reporterContact.length < 5) fieldErrors.reporterContact = "Phone or email so we can update you";
+  if (unitId && !isUuid(unitId)) fieldErrors.unitId = "Invalid location";
+  if (Object.keys(fieldErrors).length) return { ok: false, error: "A couple of details are missing.", fieldErrors };
+
+  const domain = domainRaw as SystemDomain;
+  if (!findIssue(domain, issueCode)) fieldErrors.issueCode = "Choose what's wrong";
+  if (Object.keys(fieldErrors).length) return { ok: false, error: "A couple of details are missing.", fieldErrors };
+
+  if (await isRateLimited(reporterContact)) {
+    return { ok: false, error: "You've sent several requests in the last hour. Please call reception so we can prioritise them." };
+  }
+
+  const viewer = await getCurrentUser();
+  const ticket = await createTicketRecord({
+    description: description || "(No additional details provided)",
+    domain,
+    issueCode,
+    impactScope,
+    safetyHazard,
+    channel: viewer ? "PORTAL" : "EMAIL",
+    unitId: unitId && isUuid(unitId) ? unitId : null,
+    reporterName,
+    reporterContact,
+    reporterUserId: viewer?.id ?? null,
+    autoAssign: true,
+    actor: null,
+  });
+  revalidatePath("/tickets");
+  revalidatePath("/dashboard");
+  redirect(`/track/${ticket.publicToken}?new=1`);
+}
+
+

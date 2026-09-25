@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { and, desc, eq, inArray, lt, ne, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { apiKeys, assets, meterReadings, tickets, units, users, type Role, type UnitType } from "@/db/schema";
+import { apiKeys, assets, categories, meterReadings, tickets, units, users, type CategoryType, type Role, type UnitType } from "@/db/schema";
 import { actorOf, requireUser } from "@/lib/auth";
 import { can } from "@/lib/permissions";
-import { DOMAINS, ROLES, UNIT_TYPES } from "@/lib/domains";
+import { DOMAINS, isCategoryColor, isCategoryType, ROLES, UNIT_TYPES } from "@/lib/domains";
 import { hashPassword, randomSecret, sha256 } from "@/lib/password";
 import { logAudit } from "@/lib/audit-log";
 import { createTicketRecord } from "@/lib/ticket-service";
@@ -23,6 +23,7 @@ export async function saveUnitAction(_prev: ActionResult | null, formData: FormD
   const code = str(formData, "code").toUpperCase();
   const name = str(formData, "name");
   const type = str(formData, "type") as UnitType;
+  const categoryId = optStr(formData, "categoryId");
   const floor = str(formData, "floor");
   const floorLevel = Number(str(formData, "floorLevel") || "0");
   const areaRaw = str(formData, "areaSqm");
@@ -36,6 +37,7 @@ export async function saveUnitAction(_prev: ActionResult | null, formData: FormD
   if (!Number.isInteger(floorLevel) || floorLevel < -5 || floorLevel > 200) fieldErrors.floorLevel = "Integer between -5 and 200";
   if (areaRaw && (!Number.isFinite(Number(areaRaw)) || Number(areaRaw) < 0)) fieldErrors.areaSqm = "Invalid area";
   if (contactEmail && !/^\S+@\S+\.\S+$/.test(contactEmail)) fieldErrors.contactEmail = "Invalid email";
+  if (categoryId && !isUuid(categoryId)) fieldErrors.categoryId = "Invalid category";
   if (!fieldErrors.code) {
     const clash = await db
       .select({ id: units.id })
@@ -52,6 +54,7 @@ export async function saveUnitAction(_prev: ActionResult | null, formData: FormD
     type,
     floor,
     floorLevel,
+    categoryId: categoryId && isUuid(categoryId) ? categoryId : null,
     areaSqm: areaRaw ? Math.round(Number(areaRaw)) : null,
     occupantName: optStr(formData, "occupantName"),
     contactPhone: optStr(formData, "contactPhone"),
@@ -79,6 +82,74 @@ export async function deleteUnitAction(id: string): Promise<ActionResult> {
   await logAudit({ actor: user, action: "unit.delete", entityType: "unit", entityId: id, summary: `Deleted unit ${row.code}` });
   revalidatePath("/units");
   return { ok: true, message: `Unit ${row.code} deleted` };
+}
+
+/* -------------------------------- Categories ------------------------------- */
+
+const CATEGORY_CODE_RE = /^[A-Z0-9][A-Z0-9_-]{1,31}$/;
+
+export async function saveCategoryAction(_prev: ActionResult | null, formData: FormData): Promise<ActionResult> {
+  const user = await requireUser();
+  if (!can.manageCategories(user.role)) return { ok: false, error: "Only managers can modify categories." };
+  const id = optStr(formData, "id");
+  const code = str(formData, "code").toUpperCase();
+  const name = str(formData, "name");
+  const typeRaw = str(formData, "type");
+  const color = str(formData, "color") || "indigo";
+  const sortOrderRaw = str(formData, "sortOrder");
+
+  const fieldErrors: Record<string, string> = {};
+  if (!CATEGORY_CODE_RE.test(code)) fieldErrors.code = "2–32 chars: letters, numbers, dashes or underscores";
+  if (name.length < 2) fieldErrors.name = "Name is required";
+  if (!isCategoryType(typeRaw)) fieldErrors.type = "Select what this category applies to";
+  if (!isCategoryColor(color)) fieldErrors.color = "Select a colour";
+  const sortOrder = sortOrderRaw === "" ? 0 : Number(sortOrderRaw);
+  if (!Number.isInteger(sortOrder)) fieldErrors.sortOrder = "Must be a whole number";
+
+  if (!fieldErrors.code) {
+    const clash = await db
+      .select({ id: categories.id })
+      .from(categories)
+      .where(id && isUuid(id) ? and(eq(categories.code, code), ne(categories.id, id)) : eq(categories.code, code))
+      .limit(1);
+    if (clash.length) fieldErrors.code = "Category code already exists";
+  }
+  if (Object.keys(fieldErrors).length) return { ok: false, error: "Please fix the highlighted fields.", fieldErrors };
+
+  const values = {
+    code,
+    name,
+    type: typeRaw as CategoryType,
+    color,
+    sortOrder,
+    description: optStr(formData, "description"),
+    active: formData.get("active") !== null,
+    updatedAt: new Date(),
+  };
+  if (id && isUuid(id)) {
+    await db.update(categories).set(values).where(eq(categories.id, id));
+    await logAudit({ actor: user, action: "category.update", entityType: "category", entityId: id, summary: `Updated category ${code}` });
+  } else {
+    const [row] = await db.insert(categories).values(values).returning({ id: categories.id });
+    await logAudit({ actor: user, action: "category.create", entityType: "category", entityId: row.id, summary: `Created category ${code}` });
+  }
+  revalidatePath("/categories");
+  revalidatePath("/units");
+  revalidatePath("/assets");
+  return { ok: true, message: id ? `Category ${code} updated` : `Category ${code} created` };
+}
+
+export async function deleteCategoryAction(id: string): Promise<ActionResult> {
+  const user = await requireUser();
+  if (!can.manageCategories(user.role)) return { ok: false, error: "Only managers can delete categories." };
+  if (!isUuid(id)) return { ok: false, error: "Invalid category." };
+  const [row] = await db.delete(categories).where(eq(categories.id, id)).returning({ code: categories.code });
+  if (!row) return { ok: false, error: "Category not found." };
+  await logAudit({ actor: user, action: "category.delete", entityType: "category", entityId: id, summary: `Deleted category ${row.code}` });
+  revalidatePath("/categories");
+  revalidatePath("/units");
+  revalidatePath("/assets");
+  return { ok: true, message: `Category ${row.code} deleted` };
 }
 
 /* ---------------------------------- Users --------------------------------- */

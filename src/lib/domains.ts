@@ -1,5 +1,6 @@
 import type {
   AssetStatus,
+  CategoryType,
   Channel,
   Criticality,
   ImpactScope,
@@ -235,6 +236,48 @@ export function findIssue(domain: SystemDomain, code: string): IssueType | undef
 
 export function isDomain(value: unknown): value is SystemDomain {
   return typeof value === "string" && (DOMAINS as string[]).includes(value);
+}
+
+export const CATEGORY_TYPES: CategoryType[] = ["UNIT", "ASSET", "TICKET"];
+export const CATEGORY_TYPE_META: Record<CategoryType, { label: string; blurb: string }> = {
+  UNIT: { label: "Location", blurb: "Groups units, apartments, retail and plant rooms" },
+  ASSET: { label: "Asset", blurb: "Groups equipment and systems in the registry" },
+  TICKET: { label: "Ticket", blurb: "Groups work types for triage and reporting" },
+};
+
+export function isCategoryType(value: unknown): value is CategoryType {
+  return typeof value === "string" && (CATEGORY_TYPES as string[]).includes(value);
+}
+
+export const CATEGORY_COLORS = [
+  "slate",
+  "indigo",
+  "sky",
+  "emerald",
+  "amber",
+  "orange",
+  "rose",
+  "violet",
+] as const;
+export type CategoryColor = (typeof CATEGORY_COLORS)[number];
+
+export function isCategoryColor(value: unknown): value is CategoryColor {
+  return typeof value === "string" && (CATEGORY_COLORS as readonly string[]).includes(value);
+}
+
+export const CATEGORY_COLOR_CLASSES: Record<CategoryColor, string> = {
+  slate: "bg-slate-100 text-slate-700 ring-slate-500/20",
+  indigo: "bg-indigo-50 text-indigo-700 ring-indigo-600/20",
+  sky: "bg-sky-50 text-sky-700 ring-sky-600/20",
+  emerald: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  amber: "bg-amber-50 text-amber-700 ring-amber-600/25",
+  orange: "bg-orange-50 text-orange-700 ring-orange-600/20",
+  rose: "bg-rose-50 text-rose-700 ring-rose-600/20",
+  violet: "bg-violet-50 text-violet-700 ring-violet-600/20",
+};
+
+export function categoryBadgeClass(color: string | null | undefined) {
+  return CATEGORY_COLOR_CLASSES[isCategoryColor(color) ? color : "slate"];
 }
 
 export const UNIT_TYPES: UnitType[] = ["RESIDENTIAL", "COMMERCIAL", "COMMON_AREA", "TECHNICAL"];

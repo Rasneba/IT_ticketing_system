@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Clock, Layers, QrCode, ShieldCheck, Wrench } from "lucide-react";
 import { ensureDatabaseReady } from "@/db/bootstrap";
@@ -70,6 +71,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <h2 className="text-2xl font-bold tracking-tight text-slate-900">Sign in</h2>
           <p className="mt-1 text-sm text-slate-500">Staff, technicians and tenants use the same secure portal.</p>
           <LoginForm next={next ?? ""} />
+          <p className="mt-6 rounded-2xl bg-slate-50 p-4 text-center text-xs text-slate-600 ring-1 ring-slate-200">
+            Resident or visitor?{" "}
+            <Link href="/report" className="font-semibold text-indigo-600 hover:text-indigo-500">
+              Report an issue without logging in
+            </Link>
+          </p>
         </div>
       </section>
     </div>

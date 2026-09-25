@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED = ["/dashboard", "/tickets", "/assets", "/units", "/meters", "/users", "/docs", "/settings", "/audit"];
+const PROTECTED = ["/dashboard", "/tickets", "/assets", "/units", "/meters", "/users", "/categories", "/docs", "/settings", "/audit"];
 
 /**
  * Optimistic auth gate: redirects to /login when no session cookie is present.
@@ -19,5 +19,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|r/|track/).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|r/|track/|report).*)"],
 };

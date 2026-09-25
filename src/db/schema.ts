@@ -62,6 +62,10 @@ export const impactScopeEnum = pgEnum("impact_scope", ["SINGLE", "UNIT", "FLOOR"
 
 export const noteTypeEnum = pgEnum("note_type", ["COMMENT", "STATUS_CHANGE", "AUDIT_CAPTURE", "ASSIGNMENT", "SYSTEM"]);
 
+export const categoryTypeEnum = pgEnum("category_type", ["UNIT", "ASSET", "TICKET"]);
+
+export type CategoryType = (typeof categoryTypeEnum.enumValues)[number];
+
 /* -------------------------------------------------------------------------- */
 /*                                   Tables                                   */
 /* -------------------------------------------------------------------------- */
@@ -70,6 +74,22 @@ const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 };
+
+export const categories = pgTable(
+  "categories",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    code: varchar("code", { length: 32 }).notNull().unique(),
+    name: varchar("name", { length: 160 }).notNull(),
+    type: categoryTypeEnum("type").notNull(),
+    description: text("description"),
+    color: varchar("color", { length: 16 }).notNull().default("indigo"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    active: boolean("active").notNull().default(true),
+    ...timestamps,
+  },
+  (t) => [index("categories_type_idx").on(t.type), index("categories_sort_idx").on(t.sortOrder)],
+);
 
 export const units = pgTable(
   "units",
@@ -80,6 +100,7 @@ export const units = pgTable(
     type: unitTypeEnum("type").notNull().default("RESIDENTIAL"),
     floor: varchar("floor", { length: 64 }).notNull(),
     floorLevel: integer("floor_level").notNull().default(0),
+    categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
     occupantName: varchar("occupant_name", { length: 160 }),
     contactPhone: varchar("contact_phone", { length: 40 }),
     contactEmail: varchar("contact_email", { length: 160 }),
@@ -87,7 +108,7 @@ export const units = pgTable(
     notes: text("notes"),
     ...timestamps,
   },
-  (t) => [index("units_type_idx").on(t.type)],
+  (t) => [index("units_type_idx").on(t.type), index("units_category_idx").on(t.categoryId)],
 );
 
 export const users = pgTable("users", {
@@ -128,6 +149,7 @@ export const assets = pgTable(
     name: varchar("name", { length: 160 }).notNull(),
     domain: systemDomainEnum("domain").notNull(),
     unitId: uuid("unit_id").references(() => units.id, { onDelete: "set null" }),
+    categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
     locationDetail: varchar("location_detail", { length: 200 }),
     manufacturer: varchar("manufacturer", { length: 80 }),
     model: varchar("model", { length: 120 }),
@@ -145,7 +167,11 @@ export const assets = pgTable(
     notes: text("notes"),
     ...timestamps,
   },
-  (t) => [index("assets_domain_idx").on(t.domain), index("assets_unit_idx").on(t.unitId)],
+  (t) => [
+    index("assets_domain_idx").on(t.domain),
+    index("assets_unit_idx").on(t.unitId),
+    index("assets_category_idx").on(t.categoryId),
+  ],
 );
 
 export const tickets = pgTable(
@@ -166,6 +192,7 @@ export const tickets = pgTable(
     priorityOverridden: boolean("priority_overridden").notNull().default(false),
     assetId: uuid("asset_id").references(() => assets.id, { onDelete: "set null" }),
     unitId: uuid("unit_id").references(() => units.id, { onDelete: "set null" }),
+    categoryId: uuid("category_id").references(() => categories.id, { onDelete: "set null" }),
     reporterName: varchar("reporter_name", { length: 160 }),
     reporterContact: varchar("reporter_contact", { length: 160 }),
     reporterUserId: uuid("reporter_user_id").references(() => users.id, { onDelete: "set null" }),
@@ -187,6 +214,7 @@ export const tickets = pgTable(
     index("tickets_priority_idx").on(t.priority),
     index("tickets_assignee_idx").on(t.assigneeId),
     index("tickets_asset_idx").on(t.assetId),
+    index("tickets_category_idx").on(t.categoryId),
     index("tickets_created_idx").on(t.createdAt),
     index("tickets_external_idx").on(t.externalRef),
   ],

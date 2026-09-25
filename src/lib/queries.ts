@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, gte, ilike, inArray, isNotNull, isNull, or, sql, type SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "@/db";
-import { assets, meterReadings, ticketNotes, tickets, units, users, type TicketStatus } from "@/db/schema";
+import { assets, categories, meterReadings, ticketNotes, tickets, units, users, type CategoryType, type TicketStatus } from "@/db/schema";
 import type { SessionUser } from "./auth";
 import { isDomain } from "./domains";
 import { isPriority } from "./sla";
@@ -135,6 +135,23 @@ export async function listUnitsBasic() {
     .select({ id: units.id, code: units.code, name: units.name, floor: units.floor, type: units.type })
     .from(units)
     .orderBy(asc(units.floorLevel), asc(units.code));
+}
+
+export async function listCategories(type?: CategoryType, includeInactive = false) {
+  const conds: SQL[] = [];
+  if (type) conds.push(eq(categories.type, type));
+  if (!includeInactive) conds.push(eq(categories.active, true));
+  return db
+    .select({
+      id: categories.id,
+      code: categories.code,
+      name: categories.name,
+      type: categories.type,
+      color: categories.color,
+    })
+    .from(categories)
+    .where(conds.length ? and(...conds) : undefined)
+    .orderBy(asc(categories.sortOrder), asc(categories.code));
 }
 
 export async function listAssetsBasic() {

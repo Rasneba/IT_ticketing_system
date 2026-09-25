@@ -6,9 +6,11 @@ React 19, Tailwind CSS 4, Drizzle ORM and PostgreSQL (Neon).
 ## Features
 
 - Ticket intake, triage, assignment and SLA tracking
+- Categories: reusable groupings with their own id and code, applied to locations, assets and tickets
 - Asset, meter, unit, user and role management
 - Audit log capture on every mutation
-- Public trackable report links (`/track/[token]`, `/r/[token]`)
+- Public no-login intake at `/report`, plus scan-to-report QR links (`/r/[token]`)
+- Public trackable report links (`/track/[token]`)
 - PDF generation for reports
 - Bootstrap + seed data for a fresh database
 
@@ -105,7 +107,25 @@ Do not run migrations as a Vercel build step — the build environment has no da
 ```
 src/app/            routes (App Router), route handlers under src/app/api
 src/app/actions/    server actions
+src/app/report/     public no-login ticket request form
 src/db/             drizzle schema, pool, bootstrap and seed scripts
 src/lib/            auth, permissions, SLA, workflow, PDF, audit helpers
 drizzle/            generated SQL migrations
 ```
+
+## Categories
+
+`categories` is a reusable grouping layer with its own `id` and unique `code`, a `name`,
+a `type` (`UNIT` / `ASSET` / `TICKET`), a `color`, a `sort_order` and an `active` flag.
+`units`, `assets` and `tickets` each carry a nullable `category_id`; deleting a category
+sets it to `null` on those rows rather than cascading.
+
+Manage them at `/categories` (ADMIN and MANAGER). Location categories appear in the unit
+form and as a code badge in the unit list.
+
+## Public intake
+
+`/report` creates a ticket with no login. The visitor picks the system, the fault and the
+impact scope, optionally their unit, and leaves a name and contact. On submit they are sent
+to `/track/<token>` to follow progress. Submissions are rate limited to 5 per contact per
+hour and filtered by a honeypot field.
