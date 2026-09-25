@@ -7,7 +7,7 @@ import { listStaff, listTickets, type TicketFilters } from "@/lib/queries";
 import { DOMAIN_META, DOMAINS, CHANNEL_META } from "@/lib/domains";
 import { PRIORITIES, SLA_POLICY } from "@/lib/sla";
 import { STATUS_META, TICKET_STATUSES } from "@/lib/workflow";
-import { cn, locationLabel, ticketRef, timeAgo } from "@/lib/utils";
+import { cn, locationLabel, requestNow, ticketRef, timeAgo } from "@/lib/utils";
 import { DomainBadge, DomainTile, PriorityBadge, StatusBadge } from "@/components/badges";
 import { Avatar, Card, EmptyState, LinkButton, PageHeader, inputClass } from "@/components/ui";
 import { AutoSubmitSelect } from "@/components/form-controls";
@@ -31,7 +31,7 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
   };
   const isTenant = user.role === "TENANT";
   const [rows, staff] = await Promise.all([listTickets(f, user), isTenant ? Promise.resolve([]) : listStaff()]);
-  const serverNow = Date.now();
+  const serverNow = requestNow();
 
   const tabs = [
     { key: "", label: "Active" },

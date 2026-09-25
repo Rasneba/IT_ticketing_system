@@ -8,7 +8,7 @@ import { assets, tickets, type ImpactScope, type SystemDomain } from "@/db/schem
 import { getCurrentUser } from "@/lib/auth";
 import { findIssue, IMPACT_SCOPES, isDomain } from "@/lib/domains";
 import { createTicketRecord } from "@/lib/ticket-service";
-import { isUuid, ticketRef } from "@/lib/utils";
+import { isUuid } from "@/lib/utils";
 import { str, type ActionResult } from "@/lib/action-types";
 
 /** Rate limit for unauthenticated submissions, per reporter contact. */

@@ -20,7 +20,7 @@ import { getDashboardData } from "@/lib/queries";
 import { DOMAIN_GROUPS, DOMAIN_META, DOMAINS, type DomainGroup } from "@/lib/domains";
 import { PRIORITIES, SLA_POLICY, formatMinutes } from "@/lib/sla";
 import { STATUS_META } from "@/lib/workflow";
-import { BUILDING_NAME, BUILDING_TZ, cn, firstName, formatDate, locationLabel, ticketRef, timeAgo } from "@/lib/utils";
+import { BUILDING_NAME, BUILDING_TZ, cn, firstName, formatDate, locationLabel, requestNow, ticketRef, timeAgo } from "@/lib/utils";
 import { AssetStatusBadge, DomainTile, PriorityBadge, StatusBadge } from "@/components/badges";
 import { Avatar, Card, CardHeader, EmptyState, LinkButton, StatCard } from "@/components/ui";
 import { SlaPill } from "@/components/sla-timer";
@@ -35,7 +35,7 @@ function greeting() {
 export default async function DashboardPage() {
   const user = await requireUser();
   const data = await getDashboardData(user);
-  const serverNow = Date.now();
+  const serverNow = requestNow();
   const isTenant = user.role === "TENANT";
 
   const statusMap = Object.fromEntries(data.statusCounts.map((s) => [s.status, s.n])) as Record<string, number>;

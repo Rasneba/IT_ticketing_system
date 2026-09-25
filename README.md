@@ -47,6 +47,17 @@ npm run db:push      # or: npm run db:migrate
 npm run db:seed      # npm run db:seed -- --reset to wipe and reseed
 ```
 
+### Seed credentials
+
+The seeder creates eight shareable accounts, all with the same password. Locally that
+defaults to `demo1234`; set `DEMO_PASSWORD` to override it. When `NODE_ENV=production` the
+password must come from `DEMO_PASSWORD` and be at least 12 characters, otherwise the seeder
+aborts before touching the database rather than shipping a well-known credential.
+
+Demo data is for evaluation only. Before exposing a deployment, change the admin password
+and deactivate the filler accounts (tenants, technicians, the property manager) from
+`/users` — their role coverage is only useful while you are testing.
+
 Then start the dev server:
 
 ```bash

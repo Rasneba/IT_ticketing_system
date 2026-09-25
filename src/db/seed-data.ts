@@ -22,6 +22,38 @@ import { hashPassword, randomCode, randomSecret, sha256 } from "../lib/password"
 
 type DB = typeof appDb;
 
+const DEMO_PASSWORD_MIN_LENGTH = 12;
+export const DEMO_EMAIL = "admin@marina.local";
+
+/**
+ * The seed creates eight shareable accounts, so the shared password is the
+ * weakest link in the whole dataset. Outside production it falls back to the
+ * documented demo value; in production it must come from DEMO_PASSWORD and
+ * clear a minimum length, otherwise seeding aborts rather than quietly
+ * shipping a well-known credential.
+ */
+export function resolveDemoPassword(env: NodeJS.ProcessEnv = process.env) {
+  const configured = env.DEMO_PASSWORD?.trim();
+  const isProduction = env.NODE_ENV === "production";
+
+  if (!isProduction) {
+    return { password: configured || "demo1234", isProduction: false };
+  }
+  if (!configured) {
+    throw new Error(
+      "Refusing to seed in production without DEMO_PASSWORD. Set a unique password of at least " +
+        `${DEMO_PASSWORD_MIN_LENGTH} characters in the environment before seeding.`,
+    );
+  }
+  if (configured.length < DEMO_PASSWORD_MIN_LENGTH) {
+    throw new Error(
+      `Refusing to seed in production: DEMO_PASSWORD must be at least ${DEMO_PASSWORD_MIN_LENGTH} characters ` +
+        `(got ${configured.length}).`,
+    );
+  }
+  return { password: configured, isProduction: true };
+}
+
 const MIN = 60_000;
 const H = 60 * MIN;
 const D = 24 * H;
@@ -75,7 +107,8 @@ type TicketSpec = {
 
 export async function seedDatabase(db: DB) {
   const now = Date.now();
-  const passwordHash = await hashPassword("demo1234");
+  const { password } = resolveDemoPassword();
+  const passwordHash = await hashPassword(password);
   const rand = mulberry32(20260301);
 
   await db.transaction(async (tx) => {

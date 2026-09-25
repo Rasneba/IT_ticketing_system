@@ -6,7 +6,7 @@ import { db } from "@/db";
 import { assets, ticketNotes, tickets, units, users } from "@/db/schema";
 import { formatMinutes, SLA_POLICY } from "@/lib/sla";
 import { STATUS_META, STATUS_STEPS } from "@/lib/workflow";
-import { BUILDING_NAME, cn, firstName, formatDateTime, locationLabel, ticketRef, timeAgo } from "@/lib/utils";
+import { BUILDING_NAME, cn, firstName, formatDateTime, locationLabel, requestNow, ticketRef, timeAgo } from "@/lib/utils";
 import { DomainIcon, PriorityBadge, StatusBadge } from "@/components/badges";
 import { SlaTimerCard } from "@/components/sla-timer";
 import { AutoRefresh } from "./auto-refresh";
@@ -48,7 +48,7 @@ export default async function TrackPage({ params, searchParams }: { params: Prom
     .where(and(eq(ticketNotes.ticketId, t.id), eq(ticketNotes.isPublic, true)))
     .orderBy(asc(ticketNotes.createdAt));
   const idx = STATUS_STEPS.indexOf(t.status);
-  const serverNow = Date.now();
+  const serverNow = requestNow();
   const policy = SLA_POLICY[t.priority];
   const sla = {
     status: t.status,

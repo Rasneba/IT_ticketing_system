@@ -22,6 +22,16 @@ export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+/**
+ * Wall-clock reading for a single server request. Only call this from a server
+ * component and pass the result down to a client component as a prop, so the
+ * timestamp is captured once per request and serialised with the RSC payload.
+ * Calling Date.now() directly in a component body is flagged as impure.
+ */
+export function requestNow(): number {
+  return Date.now();
+}
+
 export function ticketRef(seq: number) {
   return `SR-${String(seq).padStart(5, "0")}`;
 }

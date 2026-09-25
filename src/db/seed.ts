@@ -7,9 +7,13 @@ import { sql } from "drizzle-orm";
 
 async function main() {
   const { db, pool } = await import("./index");
-  const { seedDatabase } = await import("./seed-data");
+  const { seedDatabase, resolveDemoPassword, DEMO_EMAIL } = await import("./seed-data");
   const { users } = await import("./schema");
   const reset = process.argv.includes("--reset");
+
+  // Resolve before touching the database so a misconfigured production seed
+  // fails fast instead of truncating and then erroring halfway through.
+  const { password, isProduction } = resolveDemoPassword();
 
   if (reset) {
     await db.execute(
@@ -23,7 +27,11 @@ async function main() {
     console.log(`Database already contains ${n} users — skipping (use --reset to reseed).`);
   } else {
     await seedDatabase(db);
-    console.log("Demo data seeded. Login: admin@marina.local / demo1234");
+    console.log(
+      isProduction
+        ? `Demo data seeded. Sign in as ${DEMO_EMAIL} using the DEMO_PASSWORD you configured.`
+        : `Demo data seeded. Login: ${DEMO_EMAIL} / ${password}`,
+    );
   }
   await pool.end();
 }

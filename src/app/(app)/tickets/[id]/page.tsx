@@ -14,7 +14,7 @@ import { formatMinutes, SLA_POLICY } from "@/lib/sla";
 import { maskSecret } from "@/lib/audit-captures";
 import { sopsForTicket } from "@/lib/sop";
 import { getBaseUrl } from "@/lib/server-utils";
-import { formatDate, formatDateTime, isUuid, locationLabel, ticketRef, timeAgo } from "@/lib/utils";
+import { formatDate, formatDateTime, isUuid, locationLabel, requestNow, ticketRef, timeAgo } from "@/lib/utils";
 import {
   AssetStatusBadge,
   Badge,
@@ -114,7 +114,7 @@ export default async function TicketWorkbenchPage({ params }: { params: Promise<
   const issue = findIssue(t.domain, t.issueCode);
   const policy = SLA_POLICY[t.priority];
   const sops = sopsForTicket(t.domain, t.issueCode);
-  const serverNow = Date.now();
+  const serverNow = requestNow();
   const trackingUrl = `${baseUrl}/track/${t.publicToken}`;
   const slaFields = {
     status: t.status,
