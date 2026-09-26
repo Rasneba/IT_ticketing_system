@@ -250,7 +250,7 @@ export function DispatchCard({
           {staff.map((s) => (
             <option key={s.id} value={s.id}>
               {s.name}
-              {s.skills.includes(domain) ? " ★ skilled" : ""}
+              {s.skills.includes(domain) ? " (skilled)" : ""}
             </option>
           ))}
         </select>
@@ -295,7 +295,7 @@ export function DispatchCard({
                 type="button"
                 key={p}
                 onClick={() => setNewPriority(p)}
-                className={cn("rounded-xl border p-2 text-center", newPriority === p ? "border-indigo-500 ring-1 ring-indigo-500" : "border-slate-200")}
+                className={cn("rounded-xl border p-2 text-center", newPriority === p ? "border-accent-500 ring-1 ring-accent-500" : "border-slate-200")}
               >
                 <PriorityBadge priority={p} showLabel={false} />
                 <p className="mt-1 text-[11px] text-slate-500">{SLA_POLICY[p].label}</p>
@@ -327,13 +327,13 @@ function CaptureCard({ note }: { note: NoteView }) {
   const fields = note.metadata.fields ?? {};
   const sensitive = note.metadata.sensitiveKeys ?? [];
   return (
-    <div className="mt-2 rounded-xl border border-indigo-100 bg-indigo-50/40 p-3">
+    <div className="mt-2 rounded-xl border border-accent-100 bg-accent-50/40 p-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="flex items-center gap-1.5 text-xs font-semibold text-indigo-800">
+        <p className="flex items-center gap-1.5 text-xs font-semibold text-accent-800">
           <ClipboardCheck className="size-3.5" /> {type?.label ?? note.metadata.captureType}
         </p>
         {sensitive.length ? (
-          <button type="button" onClick={() => setReveal((r) => !r)} className="flex items-center gap-1 text-[11px] font-medium text-indigo-600 hover:text-indigo-800">
+          <button type="button" onClick={() => setReveal((r) => !r)} className="flex items-center gap-1 text-[11px] font-medium text-accent-600 hover:text-accent-800">
             {reveal ? <EyeOff className="size-3" /> : <Eye className="size-3" />} {reveal ? "Hide" : "Reveal"} secrets
           </button>
         ) : note.metadata.masked ? (
@@ -396,7 +396,7 @@ function NoteItem({ note }: { note: NoteView }) {
           </p>
           {note.metadata.trace?.length ? (
             <details className="mt-1.5 text-xs text-slate-500">
-              <summary className="cursor-pointer font-medium text-indigo-600">Decision trace ({note.metadata.trace.length} rules)</summary>
+              <summary className="cursor-pointer font-medium text-accent-600">Decision trace ({note.metadata.trace.length} rules)</summary>
               <ol className="mt-1 list-decimal space-y-0.5 pl-5">
                 {note.metadata.trace.map((l, i) => (
                   <li key={i}>{l}</li>
@@ -418,7 +418,7 @@ function NoteItem({ note }: { note: NoteView }) {
           <span className="text-sm font-semibold text-slate-900">{note.authorName}</span>
           {note.authorRole ? <span className="text-[11px] text-slate-400">{ROLE_META[note.authorRole].label}</span> : null}
           {note.type === "AUDIT_CAPTURE" ? (
-            <span className="rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-indigo-700">Audit capture</span>
+            <span className="rounded bg-accent-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-accent-700">Audit capture</span>
           ) : note.isPublic ? (
             <span className="flex items-center gap-0.5 rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-emerald-700">
               <Globe className="size-2.5" /> Public
@@ -577,7 +577,7 @@ export function Timeline({
             <div className="flex items-center justify-between gap-3">
               {!isTenant ? (
                 <label className="flex items-center gap-2 text-xs text-slate-600">
-                  <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="size-4 rounded border-slate-300 text-indigo-600" />
+                  <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} className="size-4 rounded border-slate-300 text-accent-600" />
                   Visible to reporter on tracking page
                 </label>
               ) : (

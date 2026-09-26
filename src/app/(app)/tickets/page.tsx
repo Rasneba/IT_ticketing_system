@@ -227,7 +227,7 @@ export default async function TicketsPage({ searchParams }: { searchParams: Prom
                             <span>·</span>
                             <span>{CHANNEL_META[t.channel].label}</span>
                           </div>
-                          <p className="truncate font-medium text-slate-900 group-hover:text-indigo-700">{t.title}</p>
+                          <p className="truncate font-medium text-slate-900 group-hover:text-accent-700">{t.title}</p>
                           <p className="truncate text-xs text-slate-500">
                             {t.assetTag ? <span className="font-mono">{t.assetTag} · </span> : null}
                             {locationLabel({ name: t.unitName, floor: t.unitFloor, code: t.unitCode })}

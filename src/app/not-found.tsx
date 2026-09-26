@@ -10,7 +10,7 @@ export default function NotFound() {
         </div>
         <h1 className="mt-5 text-xl font-bold text-slate-900">Page not found</h1>
         <p className="mt-1 text-sm text-slate-500">The ticket, asset or page you&apos;re looking for doesn&apos;t exist or you don&apos;t have access.</p>
-        <Link href="/dashboard" className="mt-6 inline-flex h-9 items-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white hover:bg-indigo-500">
+        <Link href="/dashboard" className="mt-6 inline-flex h-9 items-center rounded-lg bg-accent-600 px-4 text-sm font-semibold text-white hover:bg-accent-500">
           Back to dashboard
         </Link>
       </div>

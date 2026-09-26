@@ -48,7 +48,7 @@ export function Bars({
       {data.map((d, i) => (
         <div key={i} className="group relative flex h-full flex-1 flex-col justify-end">
           <div
-            className={cn("w-full rounded-t-sm transition", d.highlight ? "bg-red-500" : "bg-indigo-400/80 group-hover:bg-indigo-500")}
+            className={cn("w-full rounded-t-sm transition", d.highlight ? "bg-red-500" : "bg-accent-400/80 group-hover:bg-accent-500")}
             style={{ height: `${Math.max(2, (d.value / max) * 100)}%` }}
           />
           <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-slate-900 px-1.5 py-0.5 text-[10px] text-white group-hover:block">

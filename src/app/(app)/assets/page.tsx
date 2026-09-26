@@ -200,7 +200,7 @@ export default async function AssetsPage({ searchParams }: { searchParams: Promi
                     <tr key={a.id} className="group relative hover:bg-slate-50/80">
                       <td className="max-w-[320px] px-4 py-3">
                         <Link href={`/assets/${a.id}`} className="block after:absolute after:inset-0">
-                          <p className="truncate font-medium text-slate-900 group-hover:text-indigo-700">{a.name}</p>
+                          <p className="truncate font-medium text-slate-900 group-hover:text-accent-700">{a.name}</p>
                           <p className="font-mono text-xs text-slate-500">{a.tag}</p>
                         </Link>
                       </td>

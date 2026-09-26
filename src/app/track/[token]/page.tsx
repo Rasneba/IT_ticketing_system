@@ -66,7 +66,7 @@ export default async function TrackPage({ params, searchParams }: { params: Prom
       <AutoRefresh seconds={30} />
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-2xl items-center gap-2 px-4 py-3">
-          <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
+          <span className="grid size-8 place-items-center rounded-xl bg-accent-600">
             <ShieldCheck className="size-4 text-white" />
           </span>
           <div>
@@ -104,7 +104,12 @@ export default async function TrackPage({ params, searchParams }: { params: Prom
           <ol className="mt-5 grid grid-cols-5 gap-1">
             {STATUS_STEPS.map((s, i) => (
               <li key={s} className="text-center">
-                <div className={cn("mx-auto h-1.5 rounded-full", i <= idx ? STATUS_META[t.status].dot : "bg-slate-200")} />
+                <div
+                  className={cn(
+                    "mx-auto h-1.5 rounded-full transition-colors duration-300 ease-[var(--ease-standard)]",
+                    i <= idx ? STATUS_META[t.status].dot : "bg-slate-200",
+                  )}
+                />
                 <span className={cn("mt-1.5 flex items-center justify-center gap-0.5 text-[10px] font-medium", i <= idx ? "text-slate-800" : "text-slate-400")}>
                   {i < idx ? <Check className="size-3" /> : null}
                   {STATUS_META[s].label}

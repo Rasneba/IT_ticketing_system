@@ -113,9 +113,9 @@ export const DOMAIN_META: Record<SystemDomain, DomainMeta> = {
     short: "VoIP / PBX",
     group: "IT_SECURITY",
     description: "FreePBX / Asterisk on Hyper-V, SIP trunks, handsets",
-    badge: "bg-indigo-50 text-indigo-700 ring-indigo-600/20",
-    accent: "bg-indigo-500",
-    soft: "bg-indigo-50 text-indigo-600",
+    badge: "bg-accent-50 text-accent-700 ring-accent-600/20",
+    accent: "bg-accent-500",
+    soft: "bg-accent-50 text-accent-600",
   },
   POS_PRINTER: {
     label: "POS & Thermal Printers",
@@ -267,7 +267,7 @@ export function isCategoryColor(value: unknown): value is CategoryColor {
 
 export const CATEGORY_COLOR_CLASSES: Record<CategoryColor, string> = {
   slate: "bg-slate-100 text-slate-700 ring-slate-500/20",
-  indigo: "bg-indigo-50 text-indigo-700 ring-indigo-600/20",
+  indigo: "bg-accent-50 text-accent-700 ring-accent-600/20",
   sky: "bg-sky-50 text-sky-700 ring-sky-600/20",
   emerald: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
   amber: "bg-amber-50 text-amber-700 ring-amber-600/25",
@@ -308,7 +308,7 @@ export const CRITICALITY_META: Record<Criticality, { label: string; badge: strin
 export const ROLES: Role[] = ["ADMIN", "MANAGER", "TECHNICIAN", "TENANT"];
 export const ROLE_META: Record<Role, { label: string; badge: string; description: string }> = {
   ADMIN: { label: "Administrator", badge: "bg-slate-900 text-white ring-slate-900", description: "Full access incl. users, API keys and audit" },
-  MANAGER: { label: "Property Manager", badge: "bg-indigo-50 text-indigo-700 ring-indigo-600/20", description: "Dispatch, SLA overrides, asset & unit registry" },
+  MANAGER: { label: "Property Manager", badge: "bg-accent-50 text-accent-700 ring-accent-600/20", description: "Dispatch, SLA overrides, asset & unit registry" },
   TECHNICIAN: { label: "Field Technician", badge: "bg-emerald-50 text-emerald-700 ring-emerald-600/20", description: "Resolution workbench, captures, meter readings" },
   TENANT: { label: "Tenant", badge: "bg-amber-50 text-amber-700 ring-amber-600/25", description: "Raise & track requests for own unit" },
 };

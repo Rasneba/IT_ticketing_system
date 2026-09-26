@@ -137,7 +137,7 @@ export function TicketForm({
                         className={cn(
                           "flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-medium transition",
                           domain === d
-                            ? "border-indigo-500 bg-indigo-50 text-indigo-800 ring-1 ring-indigo-500"
+                            ? "border-accent-500 bg-accent-50 text-accent-800 ring-1 ring-accent-500"
                             : "border-slate-200 bg-white text-slate-700 hover:border-slate-300",
                         )}
                       >
@@ -170,7 +170,7 @@ export function TicketForm({
                   className={cn(
                     "flex items-start justify-between gap-2 rounded-xl border p-3 text-left transition",
                     issueCode === issue.code
-                      ? "border-indigo-500 bg-indigo-50/60 ring-1 ring-indigo-500"
+                      ? "border-accent-500 bg-accent-50/60 ring-1 ring-accent-500"
                       : "border-slate-200 hover:border-slate-300",
                   )}
                 >
@@ -200,7 +200,7 @@ export function TicketForm({
                   onClick={() => setScope(sc)}
                   className={cn(
                     "rounded-xl border px-3 py-2 text-left transition",
-                    scope === sc ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500" : "border-slate-200 hover:border-slate-300",
+                    scope === sc ? "border-accent-500 bg-accent-50 ring-1 ring-accent-500" : "border-slate-200 hover:border-slate-300",
                   )}
                 >
                   <span className="block text-xs font-semibold text-slate-800">{IMPACT_SCOPE_META[sc].label}</span>
@@ -271,7 +271,7 @@ export function TicketForm({
                 {staff.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
-                    {domain && s.skills.includes(domain) ? " ★" : ""}
+                    {domain && s.skills.includes(domain) ? " (skilled)" : ""}
                   </option>
                 ))}
               </select>
@@ -283,7 +283,7 @@ export function TicketForm({
       <div className="lg:sticky lg:top-6 lg:self-start">
         <Card className="overflow-hidden">
           <div className="border-b border-slate-100 bg-slate-950 px-5 py-4 text-white">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-300">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent-300">
               <Cpu className="size-3.5" /> SLA engine preview
             </div>
             {preview ? (
@@ -315,7 +315,7 @@ export function TicketForm({
                 <ol className="space-y-1.5">
                   {preview.trace.map((line, i) => (
                     <li key={i} className="flex gap-2 text-xs text-slate-600">
-                      <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-indigo-100 text-[9px] font-bold text-indigo-700">
+                      <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded-full bg-accent-100 text-[9px] font-bold text-accent-700">
                         {i + 1}
                       </span>
                       <span>{line}</span>

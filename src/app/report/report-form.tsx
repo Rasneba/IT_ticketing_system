@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { FormAlert, SubmitButton } from "@/components/form-controls";
 
 const input =
-  "block w-full rounded-xl border-0 bg-white px-3.5 py-3 text-base text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm";
+  "block w-full rounded-xl border-0 bg-white px-3.5 py-3 text-base text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-accent-600 sm:text-sm";
 
 export type PublicUnit = { id: string; code: string; name: string; floor: string };
 
@@ -73,7 +73,7 @@ export function PublicTicketForm({
                     className={cn(
                       "rounded-xl border px-3 py-2 text-xs font-semibold transition active:scale-[0.99]",
                       domain === d
-                        ? "border-indigo-500 bg-indigo-50 text-indigo-800 ring-1 ring-indigo-500"
+                        ? "border-accent-500 bg-accent-50 text-accent-800 ring-1 ring-accent-500"
                         : "border-slate-200 bg-white text-slate-700",
                     )}
                   >
@@ -99,7 +99,7 @@ export function PublicTicketForm({
                 className={cn(
                   "w-full rounded-2xl border p-3.5 text-left transition active:scale-[0.99]",
                   issueCode === i.code
-                    ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500"
+                    ? "border-accent-500 bg-accent-50 ring-1 ring-accent-500"
                     : "border-slate-200 bg-white",
                 )}
               >
@@ -135,7 +135,7 @@ export function PublicTicketForm({
               onClick={() => setScope(s)}
               className={cn(
                 "rounded-2xl border px-3 py-2.5 text-left",
-                scope === s ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500" : "border-slate-200",
+                scope === s ? "border-accent-500 bg-accent-50 ring-1 ring-accent-500" : "border-slate-200",
               )}
             >
               <span className="block text-xs font-semibold text-slate-800">{IMPACT_SCOPE_META[s].label}</span>
@@ -202,7 +202,7 @@ export function PublicTicketForm({
           </span>
           <div className="text-sm">
             <p className="flex items-center gap-1 font-semibold">
-              <Clock className="size-4 text-indigo-300" /> A technician will respond within{" "}
+              <Clock className="size-4 text-accent-300" /> A technician will respond within{" "}
               {formatMinutes(preview.responseMinutes)}
             </p>
             <p className="text-xs text-slate-400">

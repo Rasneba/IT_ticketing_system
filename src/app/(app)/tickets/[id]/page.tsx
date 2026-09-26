@@ -239,7 +239,7 @@ export default async function TicketWorkbenchPage({ params }: { params: Promise<
                       {isTenant ? (
                         <p className="truncate text-sm font-semibold text-slate-900">{asset.name}</p>
                       ) : (
-                        <Link href={`/assets/${asset.id}`} className="truncate text-sm font-semibold text-slate-900 hover:text-indigo-600">
+                        <Link href={`/assets/${asset.id}`} className="truncate text-sm font-semibold text-slate-900 hover:text-accent-600">
                           {asset.name}
                         </Link>
                       )}
@@ -305,7 +305,7 @@ export default async function TicketWorkbenchPage({ params }: { params: Promise<
                 {sops.slice(0, 3).map((s) => (
                   <li key={s.id}>
                     <Link href={`/docs/sop/${s.id}`} className="block px-5 py-3 hover:bg-slate-50">
-                      <p className="font-mono text-[11px] text-indigo-600">{s.id}</p>
+                      <p className="font-mono text-[11px] text-accent-600">{s.id}</p>
                       <p className="text-sm font-medium text-slate-800">{s.title}</p>
                       <p className="text-xs text-slate-500">
                         {s.steps.length} steps · ~{s.estimatedMinutes} min

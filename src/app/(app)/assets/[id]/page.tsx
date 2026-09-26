@@ -118,7 +118,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
                 title="Consumption trend"
                 description={`Daily consumption (${asset.meterUnit ?? ""}) · red dots are auto-flagged anomalies`}
                 icon={<Gauge className="size-4" />}
-                action={<Link href={`/meters?meter=${asset.id}`} className="text-xs font-semibold text-indigo-600">Record reading</Link>}
+                action={<Link href={`/meters?meter=${asset.id}`} className="text-xs font-semibold text-accent-600">Record reading</Link>}
               />
               <div className="px-5 py-4">
                 <Sparkline values={deltas.slice(-30)} highlight={anomalies.filter((i) => i >= deltas.length - 30).map((i) => i - Math.max(0, deltas.length - 30))} height={80} />
@@ -189,7 +189,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
                 {sops.map((s) => (
                   <li key={s.id}>
                     <Link href={`/docs/sop/${s.id}`} className="block px-5 py-3 hover:bg-slate-50">
-                      <p className="font-mono text-[11px] text-indigo-600">{s.id}</p>
+                      <p className="font-mono text-[11px] text-accent-600">{s.id}</p>
                       <p className="text-sm font-medium text-slate-800">{s.title}</p>
                     </Link>
                   </li>
@@ -201,7 +201,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
           {unit ? (
             <Card className="p-5">
               <p className="text-[11px] font-medium uppercase tracking-wide text-slate-400">Unit</p>
-              <Link href={`/units/${unit.id}`} className="mt-1 block text-sm font-semibold text-slate-900 hover:text-indigo-600">
+              <Link href={`/units/${unit.id}`} className="mt-1 block text-sm font-semibold text-slate-900 hover:text-accent-600">
                 {unit.name} · {unit.code}
               </Link>
               <p className="text-xs text-slate-500">

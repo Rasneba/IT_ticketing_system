@@ -85,7 +85,7 @@ function NavContent({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2.5 px-5 pb-5 pt-6">
-        <div className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-900/40">
+        <div className="grid size-9 place-items-center rounded-xl bg-accent-600 shadow-lg shadow-accent-900/30">
           <ShieldCheck className="size-5 text-white" />
         </div>
         <div className="min-w-0">
@@ -98,7 +98,7 @@ function NavContent({
         <Link
           href="/tickets/new"
           onClick={onNavigate}
-          className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg bg-indigo-600 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
+          className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg bg-accent-600 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-500"
         >
           <Plus className="size-4" /> {user.role === "TENANT" ? "Report an issue" : "New ticket"}
         </Link>
@@ -128,7 +128,7 @@ function NavContent({
                           active ? "bg-white/10 text-white" : "text-slate-400 hover:bg-white/5 hover:text-slate-100",
                         )}
                       >
-                        <Icon className={cn("size-4 shrink-0", active ? "text-indigo-300" : "text-slate-500 group-hover:text-slate-300")} />
+                        <Icon className={cn("size-4 shrink-0", active ? "text-accent-300" : "text-slate-500 group-hover:text-slate-300")} />
                         <span className="flex-1 truncate">{label}</span>
                         {item.count === "active" && activeCount > 0 ? (
                           <span className="flex items-center gap-1">
@@ -195,14 +195,14 @@ export function Sidebar(props: { user: SidebarUser; activeCount: number; breache
           <Menu className="size-5" />
         </button>
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <div className="grid size-7 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600">
+          <div className="grid size-7 place-items-center rounded-lg bg-accent-600">
             <ShieldCheck className="size-4 text-white" />
           </div>
           <span className="truncate text-sm font-bold text-slate-900">Service Desk</span>
         </div>
         <Link
           href="/tickets/new"
-          className="grid size-9 place-items-center rounded-lg bg-indigo-600 text-white shadow-sm"
+          className="grid size-9 place-items-center rounded-lg bg-accent-600 text-white shadow-sm"
           aria-label="New ticket"
         >
           <Plus className="size-4" />

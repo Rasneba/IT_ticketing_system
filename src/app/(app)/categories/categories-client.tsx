@@ -112,7 +112,7 @@ function CategoryForm({ row, onDone }: { row: CategoryRow | null; onDone: () => 
               name="active"
               type="checkbox"
               defaultChecked={row ? row.active : true}
-              className="size-4 rounded border-slate-300 text-indigo-600"
+              className="size-4 rounded border-slate-300 text-accent-600"
             />
             <span className="text-sm text-slate-700">Active</span>
           </label>

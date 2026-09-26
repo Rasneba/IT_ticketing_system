@@ -57,7 +57,7 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-indigo-600">{formatDate(new Date())}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-accent-600">{formatDate(new Date())}</p>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-[1.7rem]">
             {greeting()}, {firstName(user.name)}
           </h1>
@@ -82,11 +82,11 @@ export default async function DashboardPage() {
       {p1 > 0 ? (
         <Link
           href="/tickets?priority=P1"
-          className="flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-white px-4 py-3 shadow-sm transition hover:border-red-300"
+          className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 shadow-sm transition-colors hover:border-red-300 hover:bg-red-100"
         >
           <span className="relative grid size-9 place-items-center rounded-xl bg-red-600 text-white">
             <Siren className="size-4" />
-            <span className="absolute -right-0.5 -top-0.5 size-2.5 animate-ping rounded-full bg-red-400" />
+            <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-red-300 ring-2 ring-red-50" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-red-800">
@@ -117,6 +117,7 @@ export default async function DashboardPage() {
           tone={data.breached ? "red" : "emerald"}
           href="/tickets?view=breached"
           hint="Active tickets past response or resolution target"
+          alert={data.breached > 0 && p1 === 0}
         />
         <StatCard
           label="Resolution SLA (30d)"
@@ -153,7 +154,7 @@ export default async function DashboardPage() {
             description="Active tickets ordered by the nearest response / resolution deadline"
             icon={<Clock className="size-4" />}
             action={
-              <Link href="/tickets" className="text-xs font-semibold text-indigo-600 hover:text-indigo-500">
+              <Link href="/tickets" className="text-xs font-semibold text-accent-600 hover:text-accent-500">
                 View all
               </Link>
             }
@@ -212,7 +213,7 @@ export default async function DashboardPage() {
                       <span className="font-semibold tabular-nums text-slate-900">{n}</span>
                     </div>
                     <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                      <div className={cn("h-full rounded-full transition-all group-hover:opacity-80", STATUS_META[s].dot)} style={{ width: `${(n / total) * 100}%` }} />
+                      <div className={cn("h-full rounded-full transition-[width] duration-300 ease-[var(--ease-standard)] group-hover:opacity-80", STATUS_META[s].dot)} style={{ width: `${(n / total) * 100}%` }} />
                     </div>
                   </Link>
                 );
@@ -307,7 +308,7 @@ export default async function DashboardPage() {
       <div className="grid gap-6 xl:grid-cols-3">
         {!isTenant ? (
           <Card>
-            <CardHeader title="Assets needing attention" icon={<AlertTriangle className="size-4" />} action={<Link href="/assets" className="text-xs font-semibold text-indigo-600">Registry</Link>} />
+            <CardHeader title="Assets needing attention" icon={<AlertTriangle className="size-4" />} action={<Link href="/assets" className="text-xs font-semibold text-accent-600">Registry</Link>} />
             {data.assetsAttention.length ? (
               <ul className="divide-y divide-slate-100">
                 {data.assetsAttention.map((a) => (

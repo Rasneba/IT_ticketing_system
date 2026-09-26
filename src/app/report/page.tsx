@@ -23,7 +23,7 @@ export default async function PublicReportPage() {
     <div className="min-h-screen bg-slate-100">
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-lg items-center gap-2 px-4 py-3">
-          <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
+          <span className="grid size-8 place-items-center rounded-xl bg-accent-600">
             <ShieldCheck className="size-4 text-white" />
           </span>
           <div className="min-w-0 flex-1">
@@ -34,7 +34,7 @@ export default async function PublicReportPage() {
       </header>
 
       <main className="mx-auto max-w-lg space-y-4 px-4 py-5">
-        <div className="rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 p-5 text-white">
+        <div className="rounded-3xl bg-slate-900 p-5 text-white">
           <h1 className="text-lg font-bold leading-tight">Tell us what&apos;s wrong and we&apos;ll take it from here.</h1>
           <p className="mt-1.5 text-sm text-slate-300">
             No account or app needed. You&apos;ll get a link to follow the fix.

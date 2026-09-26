@@ -102,7 +102,7 @@ export function SlaTimerCard({
         {timerText(t)}
       </p>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100">
-        <div className={cn("h-full rounded-full transition-all", meta.bar)} style={{ width: `${Math.round(t.progress * 100)}%` }} />
+        <div className={cn("h-full rounded-full transition-[width] duration-300 ease-[var(--ease-standard)]", meta.bar)} style={{ width: `${Math.round(t.progress * 100)}%` }} />
       </div>
       <p className="mt-2 text-[11px] text-slate-500" suppressHydrationWarning>
         {t.completedAt ? `Completed ${formatDateTime(t.completedAt)}` : `Due ${formatDateTime(t.dueAt)}`}

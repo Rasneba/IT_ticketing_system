@@ -129,11 +129,11 @@ export default async function SettingsPage() {
   -H "Content-Type: application/json" \\
   -d '{"assetTag":"CCTV-CAM-P03","issueCode":"CAMERA_OFFLINE","externalRef":"hik:videoloss:D19"}'`}</pre>
             <details className="text-xs">
-              <summary className="cursor-pointer font-semibold text-indigo-600">Full request schema</summary>
+              <summary className="cursor-pointer font-semibold text-accent-600">Full request schema</summary>
               <pre className="mt-2 overflow-x-auto rounded-xl bg-slate-50 p-4 text-[11px] text-slate-700 ring-1 ring-inset ring-slate-200">{INGEST_REQUEST}</pre>
             </details>
             <details className="text-xs">
-              <summary className="cursor-pointer font-semibold text-indigo-600">Webhook payload examples</summary>
+              <summary className="cursor-pointer font-semibold text-accent-600">Webhook payload examples</summary>
               <div className="mt-2 space-y-3">
                 {WEBHOOK_EXAMPLES.map((w) => (
                   <div key={w.source}>

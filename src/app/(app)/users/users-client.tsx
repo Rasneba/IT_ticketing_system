@@ -87,8 +87,8 @@ function UserForm({ user, units, onDone }: { user: UserRow | null; units: UnitOp
           <p className="mb-2 text-xs font-semibold text-slate-700">Domain skills (used by auto-dispatch)</p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {DOMAINS.map((d) => (
-              <label key={d} className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-2 text-xs has-[:checked]:border-indigo-400 has-[:checked]:bg-indigo-50">
-                <input type="checkbox" name="skills" value={d} defaultChecked={user?.skills.includes(d)} className="size-3.5 rounded border-slate-300 text-indigo-600" />
+              <label key={d} className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-2 text-xs has-[:checked]:border-accent-400 has-[:checked]:bg-accent-50">
+                <input type="checkbox" name="skills" value={d} defaultChecked={user?.skills.includes(d)} className="size-3.5 rounded border-slate-300 text-accent-600" />
                 <DomainIcon domain={d} className="size-3.5 text-slate-500" />
                 <span className="truncate">{DOMAIN_META[d].short}</span>
               </label>

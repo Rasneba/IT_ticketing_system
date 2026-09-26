@@ -62,7 +62,7 @@ export default async function LabelsPage({ searchParams }: { searchParams: Promi
                 <DomainIcon domain={l.domain} className="size-3.5 shrink-0" />
               </div>
               <div className="mx-auto mt-1.5 aspect-square w-full max-w-[150px] [&>svg]:size-full" dangerouslySetInnerHTML={{ __html: l.svg }} />
-              <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-indigo-700">Scan to report an issue</p>
+              <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-accent-700">Scan to report an issue</p>
               <p className="mt-1 line-clamp-2 text-xs font-semibold leading-tight text-slate-900">{l.name}</p>
               <p className="mt-0.5 font-mono text-[10px] text-slate-600">{l.tag}</p>
               <p className="mt-0.5 line-clamp-1 text-[10px] text-slate-500">

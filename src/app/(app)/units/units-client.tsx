@@ -197,7 +197,7 @@ export function UnitsManager({
                   <tr key={u.id} className="hover:bg-slate-50/70">
                     <td className="px-4 py-3">
                       <Link href={`/units/${u.id}`} className="group block">
-                        <p className="font-medium text-slate-900 group-hover:text-indigo-700">{u.name}</p>
+                        <p className="font-medium text-slate-900 group-hover:text-accent-700">{u.name}</p>
                         <p className="font-mono text-xs text-slate-500">{u.code}</p>
                       </Link>
                     </td>

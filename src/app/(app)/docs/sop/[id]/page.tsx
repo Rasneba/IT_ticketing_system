@@ -69,7 +69,7 @@ export default async function SopPage({ params }: { params: Promise<{ id: string
         <ol className="divide-y divide-slate-100">
           {sop.steps.map((s, i) => (
             <li key={i} className="grid gap-3 px-5 py-4 md:grid-cols-[2.5rem_1fr_16rem]">
-              <span className="grid size-8 place-items-center rounded-full bg-indigo-600 text-sm font-bold text-white">{i + 1}</span>
+              <span className="grid size-8 place-items-center rounded-full bg-accent-600 text-sm font-bold text-white">{i + 1}</span>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-slate-900">{s.action}</p>
                 <p className="mt-0.5 text-sm text-slate-600">{s.detail}</p>

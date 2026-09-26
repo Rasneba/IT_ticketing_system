@@ -60,7 +60,7 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
                   <Avatar name={r.actorName ?? "System"} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-slate-700">
-                      <span className="font-semibold text-slate-900">{r.actorName ?? "System"}</span> · {href ? <Link href={href} className="hover:text-indigo-600">{r.summary}</Link> : r.summary}
+                      <span className="font-semibold text-slate-900">{r.actorName ?? "System"}</span> · {href ? <Link href={href} className="hover:text-accent-600">{r.summary}</Link> : r.summary}
                     </p>
                     <p className="mt-0.5 flex flex-wrap gap-x-2 text-[11px] text-slate-400">
                       <span className="font-mono">{r.action}</span>

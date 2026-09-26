@@ -25,10 +25,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <div className="grid min-h-screen lg:grid-cols-[1.1fr_1fr]">
       <section className="relative hidden overflow-hidden bg-slate-950 px-12 py-12 text-white lg:flex lg:flex-col">
-        <div className="pointer-events-none absolute -left-40 -top-40 size-[520px] rounded-full bg-indigo-600/30 blur-3xl" />
+        <div className="pointer-events-none absolute -left-40 -top-40 size-[520px] rounded-full bg-accent-600/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-48 right-0 size-[480px] rounded-full bg-violet-600/20 blur-3xl" />
         <div className="relative flex items-center gap-3">
-          <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-900/50">
+          <div className="grid size-10 place-items-center rounded-xl bg-accent-600 shadow-lg shadow-accent-900/30">
             <ShieldCheck className="size-5" />
           </div>
           <div>
@@ -47,7 +47,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <ul className="mt-10 grid gap-5 sm:grid-cols-2">
             {FEATURES.map((f) => (
               <li key={f.title} className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-                <f.icon className="size-5 text-indigo-300" />
+                <f.icon className="size-5 text-accent-300" />
                 <p className="mt-3 text-sm font-semibold">{f.title}</p>
                 <p className="mt-1 text-xs leading-relaxed text-slate-400">{f.text}</p>
               </li>
@@ -60,7 +60,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <section className="flex items-center justify-center px-5 py-12 sm:px-10">
         <div className="w-full max-w-md">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
+            <div className="grid size-10 place-items-center rounded-xl bg-accent-600">
               <ShieldCheck className="size-5 text-white" />
             </div>
             <div>
@@ -73,7 +73,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <LoginForm next={next ?? ""} />
           <p className="mt-6 rounded-2xl bg-slate-50 p-4 text-center text-xs text-slate-600 ring-1 ring-slate-200">
             Resident or visitor?{" "}
-            <Link href="/report" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            <Link href="/report" className="font-semibold text-accent-600 hover:text-accent-500">
               Report an issue without logging in
             </Link>
           </p>

@@ -80,7 +80,7 @@ export default async function MetersPage({ searchParams }: { searchParams: Promi
             scroll={false}
             className={cn(
               "rounded-2xl border bg-white p-4 shadow-sm transition hover:shadow-md",
-              s.meter.id === selectedId ? "border-indigo-400 ring-1 ring-indigo-400" : "border-slate-200",
+              s.meter.id === selectedId ? "border-accent-400 ring-1 ring-accent-400" : "border-slate-200",
             )}
           >
             <div className="flex items-start justify-between gap-2">
@@ -117,7 +117,7 @@ export default async function MetersPage({ searchParams }: { searchParams: Promi
             title={`${selected.meter.name} — daily consumption`}
             description={`Last 30 days in ${selected.meter.meterUnit ?? ""} · ${selected.meter.unitName ?? ""}`}
             icon={<Gauge className="size-4" />}
-            action={<Link href={`/assets/${selected.meter.id}`} className="text-xs font-semibold text-indigo-600">Asset details</Link>}
+            action={<Link href={`/assets/${selected.meter.id}`} className="text-xs font-semibold text-accent-600">Asset details</Link>}
           />
           <div className="px-5 py-5">
             <Bars

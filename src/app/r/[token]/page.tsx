@@ -43,19 +43,19 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
   return (
     <PublicShell>
       <section className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-        <div className="bg-gradient-to-br from-slate-900 to-indigo-950 p-5 text-white">
+        <div className="bg-slate-900 p-5 text-white">
           <div className="flex items-center gap-3">
             <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white/10">
               <DomainIcon domain={asset.domain} className="size-6" />
             </span>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-300">{meta.label}</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-300">{meta.label}</p>
               <h1 className="text-lg font-bold leading-tight">{asset.name}</h1>
               <p className="font-mono text-xs text-slate-400">{asset.tag}</p>
             </div>
           </div>
           <div className="mt-4 flex items-start gap-2 rounded-2xl bg-white/5 p-3">
-            <MapPin className="mt-0.5 size-4 shrink-0 text-indigo-300" />
+            <MapPin className="mt-0.5 size-4 shrink-0 text-accent-300" />
             <div>
               <p className="text-sm font-semibold">{locationLabel(unit)}</p>
               {asset.locationDetail ? <p className="text-xs text-slate-400">{asset.locationDetail}</p> : null}
@@ -105,7 +105,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-slate-100">
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-lg items-center gap-2 px-4 py-3">
-          <span className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
+          <span className="grid size-8 place-items-center rounded-xl bg-accent-600">
             <ShieldCheck className="size-4 text-white" />
           </span>
           <div className="min-w-0 flex-1">

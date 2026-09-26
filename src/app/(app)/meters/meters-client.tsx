@@ -99,7 +99,7 @@ export function ReadingPanel({
               <input value={note} onChange={(e) => setNote(e.target.value)} className={inputClass} placeholder="Photo ref, observations…" />
             </Field>
             <label className="flex items-center gap-2 text-xs text-slate-600">
-              <input type="checkbox" checked={replaced} onChange={(e) => setReplaced(e.target.checked)} className="size-4 rounded border-slate-300 text-indigo-600" />
+              <input type="checkbox" checked={replaced} onChange={(e) => setReplaced(e.target.checked)} className="size-4 rounded border-slate-300 text-accent-600" />
               Meter replaced (new baseline)
             </label>
             <button type="submit" disabled={pending} className={buttonClass("primary", "md", "w-full")}>
