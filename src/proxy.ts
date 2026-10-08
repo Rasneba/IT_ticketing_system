@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED = ["/dashboard", "/tickets", "/assets", "/units", "/meters", "/users", "/categories", "/docs", "/settings", "/audit"];
+const PROTECTED = ["/dashboard", "/tickets", "/assets", "/units", "/meters", "/users", "/categories", "/docs", "/settings", "/audit", "/projects"];
 
 /**
  * Optimistic auth gate: redirects to /login when no session cookie is present.

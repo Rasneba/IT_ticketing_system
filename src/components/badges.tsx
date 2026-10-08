@@ -13,12 +13,14 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import type { AssetStatus, Channel, Criticality, Priority, Role, SystemDomain, TicketStatus, UnitType } from "@/db/schema";
+import type { AssetStatus, Channel, Criticality, Priority, ProjectStatus, Rag, Role, SystemDomain, TicketStatus, UnitType } from "@/db/schema";
 import {
   ASSET_STATUS_META,
   CHANNEL_META,
   CRITICALITY_META,
   DOMAIN_META,
+  PROJECT_STATUS_META,
+  RAG_META,
   ROLE_META,
   UNIT_TYPE_META,
 } from "@/lib/domains";
@@ -125,4 +127,22 @@ export function UnitTypeBadge({ type }: { type: UnitType }) {
 
 export function ChannelBadge({ channel }: { channel: Channel }) {
   return <Badge className="bg-white text-slate-600 ring-slate-200">{CHANNEL_META[channel].label}</Badge>;
+}
+
+export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
+  const m = PROJECT_STATUS_META[status];
+  return (
+    <Badge className={m.badge} dot={m.dot}>
+      {m.label}
+    </Badge>
+  );
+}
+
+export function RagBadge({ rag }: { rag: Rag }) {
+  const m = RAG_META[rag];
+  return (
+    <Badge className={m.badge} dot={m.dot}>
+      {m.label}
+    </Badge>
+  );
 }

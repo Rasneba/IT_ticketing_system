@@ -8,6 +8,7 @@ import {
   Boxes,
   Building2,
   FolderTree,
+  FolderKanban,
   Gauge,
   LayoutDashboard,
   LogOut,
@@ -47,6 +48,10 @@ const NAV: { section: string; items: NavItem[] }[] = [
       { href: "/meters", label: "Sub-meters", icon: Gauge, roles: STAFF },
       { href: "/assets/labels", label: "QR labels", icon: QrCode, roles: STAFF },
     ],
+  },
+  {
+    section: "PMO",
+    items: [{ href: "/projects", label: "Projects", icon: FolderKanban, roles: STAFF }],
   },
   {
     section: "Knowledge",

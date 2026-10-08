@@ -15,6 +15,13 @@
       "when": 1790372655694,
       "tag": "0001_cheerful_firebird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791469780076,
+      "tag": "0002_sparkling_captain_marvel",
+      "breakpoints": true
     }
   ]
 }

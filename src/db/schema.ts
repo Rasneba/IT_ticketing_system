@@ -66,6 +66,10 @@ export const categoryTypeEnum = pgEnum("category_type", ["UNIT", "ASSET", "TICKE
 
 export type CategoryType = (typeof categoryTypeEnum.enumValues)[number];
 
+export const projectStatusEnum = pgEnum("project_status", ["PLANNED", "ACTIVE", "ON_HOLD", "COMPLETED", "CANCELLED"]);
+
+export const ragEnum = pgEnum("rag", ["GREEN", "YELLOW", "RED"]);
+
 /* -------------------------------------------------------------------------- */
 /*                                   Tables                                   */
 /* -------------------------------------------------------------------------- */
@@ -291,6 +295,31 @@ export const apiKeys = pgTable("api_keys", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/* -------------------------------- Projects ------------------------------- */
+
+export const projects = pgTable(
+  "projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    code: varchar("code", { length: 32 }).notNull().unique(),
+    name: varchar("name", { length: 200 }).notNull(),
+    sponsor: varchar("sponsor", { length: 160 }),
+    projectManager: varchar("project_manager", { length: 160 }),
+    department: varchar("department", { length: 120 }),
+    startDate: date("start_date"),
+    targetEndDate: date("target_end_date"),
+    status: projectStatusEnum("status").notNull().default("ACTIVE"),
+    rag: ragEnum("rag").notNull().default("GREEN"),
+    percentComplete: integer("percent_complete").notNull().default(0),
+    budget: doublePrecision("budget").notNull().default(0),
+    actualCost: doublePrecision("actual_cost").notNull().default(0),
+    nextMilestone: varchar("next_milestone", { length: 200 }),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("projects_status_idx").on(t.status), index("projects_rag_idx").on(t.rag), index("projects_start_idx").on(t.startDate)],
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
@@ -305,6 +334,8 @@ export type Criticality = (typeof criticalityEnum.enumValues)[number];
 export type Channel = (typeof channelEnum.enumValues)[number];
 export type ImpactScope = (typeof impactScopeEnum.enumValues)[number];
 export type NoteType = (typeof noteTypeEnum.enumValues)[number];
+export type ProjectStatus = (typeof projectStatusEnum.enumValues)[number];
+export type Rag = (typeof ragEnum.enumValues)[number];
 
 export type Unit = typeof units.$inferSelect;
 export type User = typeof users.$inferSelect;
@@ -314,3 +345,4 @@ export type TicketNote = typeof ticketNotes.$inferSelect;
 export type MeterReading = typeof meterReadings.$inferSelect;
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type ApiKey = typeof apiKeys.$inferSelect;
+export type Project = typeof projects.$inferSelect;

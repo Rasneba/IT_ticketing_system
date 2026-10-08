@@ -17,7 +17,7 @@ async function main() {
 
   if (reset) {
     await db.execute(
-      sql`truncate table audit_logs, api_keys, meter_readings, ticket_notes, tickets, sessions, assets, users, units, categories restart identity cascade`,
+      sql`truncate table audit_logs, api_keys, meter_readings, ticket_notes, tickets, sessions, assets, users, projects, units, categories restart identity cascade`,
     );
     console.log("Tables truncated.");
   }

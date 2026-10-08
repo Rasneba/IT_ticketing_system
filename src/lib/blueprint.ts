@@ -22,10 +22,11 @@ export const FILE_TREE = `building-service-desk/
     │   ├── queries.ts               # read models & SLA breach SQL
     │   └── pdf/                     # IEEE 830 SRS + blueprint PDF generators
     ├── app/
-    │   ├── actions/                 # Server Actions: auth, tickets, assets, admin, public
+    │   ├── actions/                 # Server Actions: auth, tickets, assets, admin, projects, public
     │   ├── (app)/                   # authenticated shell with sidebar
     │   │   ├── dashboard/ · tickets/ · tickets/[id]/ (Resolution Workbench)
     │   │   ├── assets/ · assets/labels/ · units/ · meters/
+    │   │   ├── projects/ · projects/[id]/ (PMO project register)
     │   │   └── users/ · settings/ · audit/ · docs/
     │   ├── r/[token]/               # PUBLIC mobile Scan-to-Report view
     │   ├── track/[token]/           # PUBLIC ticket tracking
@@ -138,6 +139,7 @@ export const SERVER_ACTIONS: { name: string; file: string; roles: string; descri
   { name: "saveAssetAction / deleteAssetAction", file: "actions/assets.ts", roles: "Manager (create), Staff (edit)", description: "Asset registry CRUD with unique tag, IPv4 validation, key/value environment & specs" },
   { name: "setAssetStatusAction / regenerateQrAction", file: "actions/assets.ts", roles: "Staff / Manager", description: "Status changes and QR re-issue (invalidates old stickers)" },
   { name: "saveUnitAction / deleteUnitAction", file: "actions/admin.ts", roles: "Manager, Admin", description: "Units & zones CRUD" },
+  { name: "saveProjectAction / deleteProjectAction", file: "actions/projects.ts", roles: "Manager, Admin", description: "PMO project register CRUD: dates, RAG, % complete, budget vs actual" },
   { name: "saveUserAction / toggleUserActiveAction / deleteUserAction", file: "actions/admin.ts", roles: "Admin", description: "Users, roles, technician domain skills, tenant unit linkage" },
   { name: "addReadingAction / deleteReadingAction", file: "actions/admin.ts", roles: "Staff / Manager", description: "Cumulative readings, rollback guard, 2x trailing-average anomaly detection with auto P3 ticket" },
   { name: "createApiKeyAction / revokeApiKeyAction", file: "actions/admin.ts", roles: "Admin", description: "Ingestion API keys (shown once, stored as SHA-256)" },
@@ -154,6 +156,7 @@ export const DATA_DICTIONARY: { table: string; purpose: string; keys: string }[]
   { table: "meter_readings", purpose: "Cumulative sub-meter register values", keys: "asset_id, value, reading_at, anomaly, recorded_by_id" },
   { table: "audit_logs", purpose: "Immutable security & change log", keys: "actor_id, action, entity_type, entity_id, summary, detail" },
   { table: "api_keys", purpose: "Webhook / REST ingestion credentials", keys: "name, prefix, key_hash (SHA-256), last_used_at, revoked_at" },
+  { table: "projects", purpose: "PMO project register (one row per project)", keys: "code (unique), name, sponsor, project_manager, start_date, target_end_date, status, rag, percent_complete, budget, actual_cost" },
 ];
 
 export const API_ENDPOINTS: { method: string; path: string; auth: string; description: string }[] = [

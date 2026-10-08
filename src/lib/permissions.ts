@@ -21,4 +21,6 @@ export const can = {
   deleteReadings: mgmt,
   revealSecrets: mgmt,
   viewDocs: staff,
+  viewProjects: staff,
+  manageProjects: mgmt,
 };

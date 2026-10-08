@@ -5,6 +5,8 @@ import type {
   Criticality,
   ImpactScope,
   Priority,
+  ProjectStatus,
+  Rag,
   Role,
   SystemDomain,
   UnitType,
@@ -328,3 +330,27 @@ export const IMPACT_SCOPE_META: Record<ImpactScope, { label: string; description
   FLOOR: { label: "Whole floor", description: "Several units on the floor" },
   BUILDING: { label: "Entire building", description: "Everyone in the building" },
 };
+
+export const PROJECT_STATUSES: ProjectStatus[] = ["PLANNED", "ACTIVE", "ON_HOLD", "COMPLETED", "CANCELLED"];
+export const PROJECT_STATUS_META: Record<ProjectStatus, { label: string; badge: string; dot: string }> = {
+  PLANNED: { label: "Planned", badge: "bg-slate-100 text-slate-600 ring-slate-500/20", dot: "bg-slate-400" },
+  ACTIVE: { label: "Active", badge: "bg-accent-50 text-accent-700 ring-accent-600/20", dot: "bg-accent-500" },
+  ON_HOLD: { label: "On hold", badge: "bg-amber-50 text-amber-700 ring-amber-600/25", dot: "bg-amber-500" },
+  COMPLETED: { label: "Completed", badge: "bg-emerald-50 text-emerald-700 ring-emerald-600/20", dot: "bg-emerald-500" },
+  CANCELLED: { label: "Cancelled", badge: "bg-red-50 text-red-700 ring-red-600/25", dot: "bg-red-500" },
+};
+
+export function isProjectStatus(value: unknown): value is ProjectStatus {
+  return PROJECT_STATUSES.includes(value as ProjectStatus);
+}
+
+export const RAGS: Rag[] = ["GREEN", "YELLOW", "RED"];
+export const RAG_META: Record<Rag, { label: string; badge: string; dot: string }> = {
+  GREEN: { label: "Green", badge: "bg-emerald-50 text-emerald-700 ring-emerald-600/20", dot: "bg-emerald-500" },
+  YELLOW: { label: "Yellow", badge: "bg-amber-50 text-amber-700 ring-amber-600/25", dot: "bg-amber-500" },
+  RED: { label: "Red", badge: "bg-red-50 text-red-700 ring-red-600/25", dot: "bg-red-500" },
+};
+
+export function isRag(value: unknown): value is Rag {
+  return RAGS.includes(value as Rag);
+}
