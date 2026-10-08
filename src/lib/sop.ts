@@ -506,6 +506,83 @@ export const SOPS: Sop[] = [
     escalation: ["NVR mainboard failure: vendor RMA and a temporary NVR.", "Security incident with lost footage: inform management immediately."],
     captures: ["PART_REPLACEMENT", "FIRMWARE_UPDATE", "LICENSE_KEY"],
   },
+  {
+    id: "SOP-PMO-09",
+    title: "Project Register Maintenance (PMO)",
+    domains: [],
+    issueCodes: [],
+    summary:
+      "Keeps the PMO project register as the single source of truth: every active project registered with an owner and dates, RAG and progress kept current, budget reconciled, then rolled into the weekly status report.",
+    estimatedMinutes: 30,
+    audience: "Assistant PMO / project manager",
+    tools: [
+      "Service-desk sign-in with a manager or admin role",
+      "Approved project charters or sponsor confirmations",
+      "Finance budget-vs-actual extract",
+      "Schedule / milestone tracker for each active project",
+    ],
+    safety: [
+      "Do not delete a register entry without sponsor approval — the deletion is audited, but the project history is lost.",
+      "RAG must be evidence-based: Red requires a named cause, an owner and a recovery date.",
+      "Budget and actual figures are management information — take them from finance, never from estimate.",
+    ],
+    steps: [
+      {
+        action: "Open the register",
+        detail: "Projects → read the summary cards first: active projects, red projects, approved budget and actual cost.",
+        expected: "Portfolio totals known before any record is edited.",
+      },
+      {
+        action: "Register every active project",
+        detail:
+          "New project → unique PRJ code, name, sponsor, project manager, department, start and target end dates. A project that is not in the register is not being managed.",
+        expected: "No active project is missing from the list.",
+      },
+      {
+        action: "Work the red and yellow list",
+        detail: "Filter RAG = Red, then Yellow. For each, confirm the owner is chasing the cause and the next milestone still holds.",
+        expected: "Every red project has an owner, a cause and a recovery date.",
+      },
+      {
+        action: "Update progress and status",
+        detail: "Set % complete and status (Planned / Active / On hold / Completed / Cancelled) against delivery evidence, not optimism.",
+        expected: "Progress matches the schedule; status reflects reality.",
+      },
+      {
+        action: "Reconcile cost",
+        detail: "Enter budget and actual from the finance extract, then check the variance on the project detail page.",
+        expected: "Variance explained for any project consuming more than 90% of budget.",
+      },
+      {
+        action: "Roll the dates forward",
+        detail:
+          "Update start / target end dates and the next milestone when the plan slips — an open project with a past target end date counts as overdue.",
+        expected: "No open project carries a stale target end date.",
+      },
+      {
+        action: "Close out",
+        detail: "Completed → 100% and Completed; cancelled → Cancelled with a note; clear the next milestone on both.",
+        expected: "Only live work remains under the active filters.",
+      },
+      {
+        action: "Publish the weekly status",
+        detail: "Carry the register figures into the weekly status report: RAG, progress, top risks and issues, decisions needed and next milestones.",
+        expected: "Weekly report reconciles with the register summary cards.",
+      },
+    ],
+    verification: [
+      "Every active project appears once with a unique PRJ code",
+      "No open project is past its target end date without an escalation note",
+      "Budget vs actual reconciles with the finance extract",
+      "Weekly status figures match the register summary cards",
+    ],
+    escalation: [
+      "Red for two consecutive weeks: escalate to the sponsor with a recovery plan.",
+      "Target end date passed, or budget burn above 90%: table it at the next management review.",
+      "Scope change not yet reflected in the register: obtain sponsor approval before any work starts.",
+    ],
+    captures: [],
+  },
 ];
 
 export function getSop(id: string) {

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { asc, ne, sql } from "drizzle-orm";
-import { CircleDollarSign, FolderKanban, TriangleAlert } from "lucide-react";
+import { BookOpen, CircleDollarSign, FolderKanban, TriangleAlert } from "lucide-react";
 import { db } from "@/db";
 import { projects } from "@/db/schema";
 import { requireRole } from "@/lib/auth";
 import { can } from "@/lib/permissions";
 import { formatNumber } from "@/lib/utils";
-import { PageHeader, StatCard } from "@/components/ui";
+import { LinkButton, PageHeader, StatCard } from "@/components/ui";
 import { ProjectsManager } from "./projects-client";
 
 export const metadata: Metadata = { title: "Projects" };
@@ -56,6 +56,11 @@ export default async function ProjectsPage() {
       <PageHeader
         title="Project register"
         description="Every active project in one place — sponsor, owner, dates, RAG, progress and budget."
+        actions={
+          <LinkButton href="/docs/sop/SOP-PMO-09" variant="secondary" size="sm">
+            <BookOpen className="size-4" /> Register SOP
+          </LinkButton>
+        }
       />
       <div className="mb-6 grid gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard label="Active projects" value={formatNumber(stats.active)} icon={<FolderKanban className="size-4" />} tone="sky" hint={`${rows.length} projects registered`} />

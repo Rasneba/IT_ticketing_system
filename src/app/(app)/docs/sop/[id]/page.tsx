@@ -31,19 +31,21 @@ export default async function SopPage({ params }: { params: Promise<{ id: string
         description={sop.summary}
         actions={<span className="print:hidden"><PrintButton label="Print SOP" /></span>}
       />
-      <div className="-mt-3 mb-6 flex flex-wrap gap-2">
-        {sop.domains.map((d) => (
-          <DomainBadge key={d} domain={d} full />
-        ))}
-        {sop.issueCodes.map((code) => {
-          const issue = sop.domains.map((d) => findIssue(d, code)).find(Boolean);
-          return issue ? (
-            <span key={code} className="inline-flex items-center gap-1.5 rounded-md bg-white px-2 py-0.5 text-xs text-slate-600 ring-1 ring-inset ring-slate-200">
-              <PriorityBadge priority={issue.basePriority} showLabel={false} /> {issue.label}
-            </span>
-          ) : null;
-        })}
-      </div>
+      {sop.domains.length || sop.issueCodes.length ? (
+        <div className="-mt-3 mb-6 flex flex-wrap gap-2">
+          {sop.domains.map((d) => (
+            <DomainBadge key={d} domain={d} full />
+          ))}
+          {sop.issueCodes.map((code) => {
+            const issue = sop.domains.map((d) => findIssue(d, code)).find(Boolean);
+            return issue ? (
+              <span key={code} className="inline-flex items-center gap-1.5 rounded-md bg-white px-2 py-0.5 text-xs text-slate-600 ring-1 ring-inset ring-slate-200">
+                <PriorityBadge priority={issue.basePriority} showLabel={false} /> {issue.label}
+              </span>
+            ) : null;
+          })}
+        </div>
+      ) : null}
 
       <div className="mb-6 grid gap-4 md:grid-cols-2">
         <Card>
@@ -107,14 +109,20 @@ export default async function SopPage({ params }: { params: Promise<{ id: string
         </Card>
         <Card>
           <CardHeader title="Workbench captures" icon={<ClipboardCheck className="size-4" />} />
-          <ul className="space-y-2 px-5 py-4">
-            {sop.captures.map((c) => (
-              <li key={c} className="text-sm">
-                <p className="font-medium text-slate-800">{CAPTURE_TYPES[c]?.label ?? c}</p>
-                <p className="text-xs text-slate-500">{CAPTURE_TYPES[c]?.description}</p>
-              </li>
-            ))}
-          </ul>
+          {sop.captures.length ? (
+            <ul className="space-y-2 px-5 py-4">
+              {sop.captures.map((c) => (
+                <li key={c} className="text-sm">
+                  <p className="font-medium text-slate-800">{CAPTURE_TYPES[c]?.label ?? c}</p>
+                  <p className="text-xs text-slate-500">{CAPTURE_TYPES[c]?.description}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="px-5 py-4 text-sm text-slate-500">
+              No workbench capture applies — record the evidence in the module this SOP maintains, which is kept in the audit log.
+            </p>
+          )}
         </Card>
       </div>
     </div>

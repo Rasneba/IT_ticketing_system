@@ -66,7 +66,7 @@ export default async function DocsPage() {
       <section>
         <div className="mb-3 flex items-center gap-2">
           <Wrench className="size-4 text-slate-400" />
-          <h2 className="text-sm font-semibold text-slate-900">Standard operating procedures — field diagnostic workflows</h2>
+          <h2 className="text-sm font-semibold text-slate-900">Standard operating procedures — field diagnostics &amp; PMO workflows</h2>
         </div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {SOPS.map((s) => (
