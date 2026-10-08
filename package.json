@@ -11,6 +11,7 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/db/seed.ts",
+    "db:seed-pmo": "tsx src/db/seed-pmo.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "qrcode": "^1.5.4",
     "react": "19.2.6",
     "react-dom": "19.2.6",
+    "recharts": "^3.10.1",
     "sonner": "^2.0.8",
     "zod": "^4.6.5"
   },

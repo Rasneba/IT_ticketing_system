@@ -346,3 +346,356 @@ export type MeterReading = typeof meterReadings.$inferSelect;
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type ApiKey = typeof apiKeys.$inferSelect;
 export type Project = typeof projects.$inferSelect;
+
+/* ========================================================================== */
+/*                          PMO SYSTEM (Excel clone)                          */
+/* ========================================================================== */
+
+export const pmoProjects = pgTable(
+  "pmo_projects",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    code: varchar("code", { length: 16 }).notNull().unique(),
+    customer: varchar("customer", { length: 200 }),
+    name: varchar("name", { length: 200 }).notNull(),
+    manager: varchar("manager", { length: 160 }),
+    department: varchar("department", { length: 120 }),
+    type: varchar("type", { length: 60 }),
+    priority: varchar("priority", { length: 20 }).notNull().default("Medium"),
+    startDate: date("start_date"),
+    baselineEnd: date("baseline_end"),
+    forecastEnd: date("forecast_end"),
+    actualEnd: date("actual_end"),
+    percent: integer("percent").notNull().default(0),
+    status: varchar("status", { length: 30 }).notNull().default("Active"),
+    rag: varchar("rag", { length: 20 }).notNull().default("Green"),
+    totalApproved: doublePrecision("total_approved").notNull().default(0),
+    actualCost: doublePrecision("actual_cost").notNull().default(0),
+    forecastCost: doublePrecision("forecast_cost").notNull().default(0),
+    lastUpdated: date("last_updated"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_projects_code_idx").on(t.code), index("pmo_projects_status_idx").on(t.status)],
+);
+
+export const pmoMilestones = pgTable(
+  "pmo_milestones",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    milestone: varchar("milestone", { length: 200 }).notNull(),
+    owner: varchar("owner", { length: 160 }),
+    baselineDate: date("baseline_date"),
+    forecastDate: date("forecast_date"),
+    actualDate: date("actual_date"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_milestones_project_idx").on(t.projectId)],
+);
+
+export const pmoRaid = pgTable(
+  "pmo_raid",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    type: varchar("type", { length: 20 }).notNull().default("Risk"),
+    description: text("description").notNull(),
+    category: varchar("category", { length: 60 }),
+    probability: varchar("probability", { length: 20 }),
+    impact: varchar("impact", { length: 20 }),
+    riskScore: integer("risk_score").notNull().default(0),
+    priority: varchar("priority", { length: 20 }).notNull().default("Medium"),
+    owner: varchar("owner", { length: 160 }),
+    mitigation: text("mitigation"),
+    contingency: text("contingency"),
+    dueDate: date("due_date"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    escalation: varchar("escalation", { length: 120 }),
+    resolution: text("resolution"),
+    dateRaised: date("date_raised"),
+    dateClosed: date("date_closed"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_raid_project_idx").on(t.projectId)],
+);
+
+export const pmoActions = pgTable(
+  "pmo_actions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    source: varchar("source", { length: 120 }),
+    action: text("action").notNull(),
+    owner: varchar("owner", { length: 160 }),
+    priority: varchar("priority", { length: 20 }).notNull().default("Medium"),
+    dateOpened: date("date_opened"),
+    dueDate: date("due_date"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    completionDate: date("completion_date"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_actions_project_idx").on(t.projectId)],
+);
+
+export const pmoRaci = pgTable("pmo_raci", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  activity: varchar("activity", { length: 220 }).notNull(),
+  sponsor: varchar("sponsor", { length: 10 }),
+  pmo: varchar("pmo", { length: 10 }),
+  projectManager: varchar("project_manager", { length: 10 }),
+  businessOwner: varchar("business_owner", { length: 10 }),
+  itLead: varchar("it_lead", { length: 10 }),
+  developer: varchar("developer", { length: 10 }),
+  finance: varchar("finance", { length: 10 }),
+  procurement: varchar("procurement", { length: 10 }),
+  qa: varchar("qa", { length: 10 }),
+  endUsers: varchar("end_users", { length: 10 }),
+  validation: varchar("validation", { length: 120 }),
+  notes: text("notes"),
+  ...timestamps,
+});
+
+export const pmoStakeholders = pgTable(
+  "pmo_stakeholders",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 200 }).notNull(),
+    role: varchar("role", { length: 120 }),
+    department: varchar("department", { length: 120 }),
+    influence: varchar("influence", { length: 20 }),
+    interest: varchar("interest", { length: 20 }),
+    engagement: varchar("engagement", { length: 20 }),
+    class: varchar("class", { length: 30 }),
+    infoNeeded: text("info_needed"),
+    frequency: varchar("frequency", { length: 20 }),
+    channel: varchar("channel", { length: 80 }),
+    owner: varchar("owner", { length: 160 }),
+    strategy: text("strategy"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_stakeholders_name_idx").on(t.name)],
+);
+
+export const pmoChanges = pgTable(
+  "pmo_changes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    requestedBy: varchar("requested_by", { length: 160 }),
+    requestDate: date("request_date"),
+    description: text("description").notNull(),
+    reason: text("reason"),
+    scopeImpact: text("scope_impact"),
+    scheduleImpact: integer("schedule_impact"),
+    costImpact: doublePrecision("cost_impact").notNull().default(0),
+    riskImpact: text("risk_impact"),
+    priority: varchar("priority", { length: 20 }).notNull().default("Medium"),
+    impactAssessment: text("impact_assessment"),
+    recommendation: text("recommendation"),
+    approvalStatus: varchar("approval_status", { length: 20 }).notNull().default("Pending"),
+    approvedBy: varchar("approved_by", { length: 160 }),
+    approvalDate: date("approval_date"),
+    implementationStatus: varchar("implementation_status", { length: 30 }).notNull().default("Not Started"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_changes_project_idx").on(t.projectId)],
+);
+
+export const pmoCosts = pgTable(
+  "pmo_costs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    category: varchar("category", { length: 60 }).notNull().default("Other"),
+    owner: varchar("owner", { length: 160 }),
+    totalApproved: doublePrecision("total_approved").notNull().default(0),
+    committed: doublePrecision("committed").notNull().default(0),
+    actual: doublePrecision("actual").notNull().default(0),
+    forecast: doublePrecision("forecast").notNull().default(0),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_costs_project_idx").on(t.projectId)],
+);
+
+export const pmoResources = pgTable(
+  "pmo_resources",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    resource: varchar("resource", { length: 160 }).notNull(),
+    department: varchar("department", { length: 120 }),
+    role: varchar("role", { length: 120 }),
+    projectId: uuid("project_id"),
+    allocation: doublePrecision("allocation").notNull().default(0),
+    startDate: date("start_date"),
+    endDate: date("end_date"),
+    availability: doublePrecision("availability").notNull().default(100),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_resources_name_idx").on(t.resource)],
+);
+
+export const pmoProcurement = pgTable(
+  "pmo_procurement",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    item: varchar("item", { length: 200 }).notNull(),
+    requester: varchar("requester", { length: 160 }),
+    supplier: varchar("supplier", { length: 160 }),
+    quotation: text("quotation"),
+    poNo: varchar("po_no", { length: 60 }),
+    totalApproved: doublePrecision("total_approved").notNull().default(0),
+    quotedCost: doublePrecision("quoted_cost").notNull().default(0),
+    approvedCost: doublePrecision("approved_cost").notNull().default(0),
+    orderDate: date("order_date"),
+    expectedDelivery: date("expected_delivery"),
+    actualDelivery: date("actual_delivery"),
+    status: varchar("status", { length: 30 }).notNull().default("Requested"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_procurement_project_idx").on(t.projectId)],
+);
+
+export const pmoQuality = pgTable(
+  "pmo_quality",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    deliverable: varchar("deliverable", { length: 200 }).notNull(),
+    criteria: text("criteria"),
+    owner: varchar("owner", { length: 160 }),
+    plannedDate: date("planned_date"),
+    actualDate: date("actual_date"),
+    result: varchar("result", { length: 20 }).notNull().default("Pending"),
+    defects: integer("defects").notNull().default(0),
+    correctiveAction: text("corrective_action"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    evidence: text("evidence"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_quality_project_idx").on(t.projectId)],
+);
+
+export const pmoMeetings = pgTable(
+  "pmo_meetings",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    date: date("date"),
+    projectId: uuid("project_id"),
+    meetingType: varchar("meeting_type", { length: 60 }),
+    chair: varchar("chair", { length: 160 }),
+    attendees: text("attendees"),
+    agenda: text("agenda"),
+    discussion: text("discussion"),
+    decision: text("decision"),
+    action: text("action"),
+    owner: varchar("owner", { length: 160 }),
+    dueDate: date("due_date"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_meetings_project_idx").on(t.projectId)],
+);
+
+export const pmoDecisions = pgTable(
+  "pmo_decisions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    decisionDate: date("decision_date"),
+    decisionRequired: text("decision_required").notNull(),
+    options: text("options"),
+    recommendation: text("recommendation"),
+    decision: text("decision"),
+    maker: varchar("maker", { length: 160 }),
+    impact: text("impact"),
+    owner: varchar("owner", { length: 160 }),
+    dueDate: date("due_date"),
+    status: varchar("status", { length: 30 }).notNull().default("Pending"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_decisions_project_idx").on(t.projectId)],
+);
+
+export const pmoComms = pgTable("pmo_comms", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  audience: varchar("audience", { length: 200 }).notNull(),
+  info: text("info"),
+  owner: varchar("owner", { length: 160 }),
+  frequency: varchar("frequency", { length: 20 }),
+  format: varchar("format", { length: 60 }),
+  channel: varchar("channel", { length: 80 }),
+  timing: varchar("timing", { length: 120 }),
+  purpose: text("purpose"),
+  escalation: text("escalation"),
+  notes: text("notes"),
+  ...timestamps,
+});
+
+export const pmoClosure = pgTable(
+  "pmo_closure",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    item: varchar("item", { length: 200 }).notNull(),
+    owner: varchar("owner", { length: 160 }),
+    dueDate: date("due_date"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    evidence: text("evidence"),
+    completedDate: date("completed_date"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_closure_project_idx").on(t.projectId)],
+);
+
+export const pmoLessons = pgTable(
+  "pmo_lessons",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id"),
+    date: date("date"),
+    area: varchar("area", { length: 120 }),
+    wentWell: text("went_well"),
+    wentWrong: text("went_wrong"),
+    rootCause: text("root_cause"),
+    lesson: text("lesson"),
+    recommendation: text("recommendation"),
+    owner: varchar("owner", { length: 160 }),
+    action: text("action"),
+    status: varchar("status", { length: 30 }).notNull().default("Open"),
+    notes: text("notes"),
+    ...timestamps,
+  },
+  (t) => [index("pmo_lessons_project_idx").on(t.projectId)],
+);
+
+export type PmoProject = typeof pmoProjects.$inferSelect;
+export type PmoMilestone = typeof pmoMilestones.$inferSelect;
+export type PmoRaid = typeof pmoRaid.$inferSelect;
+export type PmoAction = typeof pmoActions.$inferSelect;
+export type PmoRaci = typeof pmoRaci.$inferSelect;
+export type PmoStakeholder = typeof pmoStakeholders.$inferSelect;
+export type PmoChange = typeof pmoChanges.$inferSelect;
+export type PmoCost = typeof pmoCosts.$inferSelect;
+export type PmoResource = typeof pmoResources.$inferSelect;
+export type PmoProcurement = typeof pmoProcurement.$inferSelect;
+export type PmoQuality = typeof pmoQuality.$inferSelect;
+export type PmoMeeting = typeof pmoMeetings.$inferSelect;
+export type PmoDecision = typeof pmoDecisions.$inferSelect;
+export type PmoComm = typeof pmoComms.$inferSelect;
+export type PmoClosure = typeof pmoClosure.$inferSelect;
+export type PmoLesson = typeof pmoLessons.$inferSelect;

@@ -10,6 +10,7 @@ import {
   FolderTree,
   FolderKanban,
   Gauge,
+  Home,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -51,7 +52,11 @@ const NAV: { section: string; items: NavItem[] }[] = [
   },
   {
     section: "PMO",
-    items: [{ href: "/projects", label: "Projects", icon: FolderKanban, roles: STAFF }],
+    items: [
+      { href: "/pmo", label: "PMO home", icon: Home, roles: STAFF },
+      { href: "/pmo/dashboard", label: "Executive dashboard", icon: LayoutDashboard, roles: STAFF },
+      { href: "/projects", label: "Projects", icon: FolderKanban, roles: STAFF },
+    ],
   },
   {
     section: "Knowledge",
